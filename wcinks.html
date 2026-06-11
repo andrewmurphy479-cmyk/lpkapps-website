@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WC INKs — Premium Inks for Cup Creators. Coming Soon.</title>
+    <meta name="description" content="WC INKs by LPK Apps — a shop and community app for cup and tumbler creators. Premium ink drops, blend recipes, creator showcases. In development.">
+    <link rel="icon" href="assets/wcinks-logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* lifted straight from the app's theme */
+            --bg: #0d0d0f;
+            --surface: #1a1a1f;
+            --elevated: #252530;
+            --border: #2a2a35;
+            --violet: #a855f7;
+            --violet-deep: #7c3aed;
+            --cyan: #06b6d4;
+            --pink: #ec4899;
+            --gold: #d4a843;
+            --text: #ffffff;
+            --text-2: #a1a1aa;
+            --text-3: #71717a;
+
+            --ink-wash: linear-gradient(120deg, #ec4899, #a855f7 45%, #06b6d4);
+
+            --display: 'Syne', sans-serif;
+            --body: 'Manrope', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--violet);
+            color: #fff;
+        }
+
+        img { display: block; max-width: 100%; }
+
+        /* Ambient ink-wash glows */
+        .ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ambient .glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(130px);
+        }
+
+        .glow-violet {
+            width: 560px; height: 560px;
+            background: radial-gradient(circle, var(--violet) 0%, transparent 70%);
+            top: -220px; left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.17;
+        }
+
+        .glow-cyan {
+            width: 460px; height: 460px;
+            background: radial-gradient(circle, var(--cyan) 0%, transparent 70%);
+            top: 48%; left: -180px;
+            opacity: 0.1;
+        }
+
+        .glow-pink {
+            width: 460px; height: 460px;
+            background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
+            top: 72%; right: -180px;
+            opacity: 0.1;
+        }
+
+        /* ========================
+           INK DRIPS — ported from the app's Discover screen
+           ======================== */
+        .drips {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .drip {
+            position: absolute;
+            top: 0;
+            animation: dripFall var(--dur) cubic-bezier(0.25, 0.1, 0.25, 1) var(--delay) infinite;
+            will-change: transform, opacity;
+            opacity: 0;
+        }
+
+        .drip .streak {
+            width: 100%;
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(to bottom, transparent 0%, var(--c-faint) 40%, var(--c) 100%);
+        }
+
+        .drip .bead {
+            position: absolute;
+            bottom: calc(var(--w) * -0.6);
+            left: calc(var(--w) * -0.3);
+            width: calc(var(--w) * 1.6);
+            height: calc(var(--w) * 2.2);
+            border-radius: 50%;
+            background: var(--c);
+        }
+
+        .drip .shine {
+            position: absolute;
+            bottom: calc(var(--w) * 0.5);
+            left: 0;
+            width: calc(var(--w) * 0.5);
+            height: calc(var(--w) * 0.7);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.32);
+        }
+
+        @keyframes dripFall {
+            0%   { transform: translateY(-15vh); opacity: 0; }
+            8%   { opacity: 1; }
+            86%  { opacity: 1; }
+            100% { transform: translateY(115vh); opacity: 0; }
+        }
+
+        /* ========================
+           NAV
+           ======================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.85rem 1.75rem;
+            background: rgba(13, 13, 15, 0.72);
+            backdrop-filter: blur(16px) saturate(1.2);
+            -webkit-backdrop-filter: blur(16px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: color 0.25s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover { color: var(--text); }
+        .nav-back .arr { transition: transform 0.25s; }
+        .nav-back:hover .arr { transform: translateX(-3px); }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.35);
+        }
+
+        .nav-brand span {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            color: var(--text);
+        }
+
+        .nav-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--violet);
+            background: rgba(168, 85, 247, 0.12);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 0.45rem 1rem;
+            border-radius: 100px;
+            white-space: nowrap;
+        }
+
+        /* ========================
+           HERO
+           ======================== */
+        .hero {
+            position: relative;
+            z-index: 2;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 7.5rem 1.5rem 5rem;
+        }
+
+        .hero-logo {
+            width: clamp(150px, 26vw, 230px);
+            border-radius: 22%;
+            box-shadow:
+                0 0 60px rgba(168, 85, 247, 0.35),
+                0 0 120px rgba(6, 182, 212, 0.18),
+                0 24px 60px rgba(0, 0, 0, 0.6);
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: heroRise 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.15s;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hero-logo:hover { transform: scale(1.04) rotate(-1.5deg); }
+
+        .hero h1 {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: clamp(2.6rem, 7.5vw, 5rem);
+            line-height: 1.04;
+            letter-spacing: -0.015em;
+            text-transform: uppercase;
+            margin-bottom: 1.4rem;
+            opacity: 0;
+            animation: heroRise 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.35s;
+        }
+
+        .hero h1 .flow {
+            background: linear-gradient(110deg, #ec4899, #a855f7 22%, #5ee7ff 45%, #ec4899 68%, #a855f7 90%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: inkShift 9s linear infinite;
+        }
+
+        @keyframes inkShift {
+            to { background-position: 300% 0; }
+        }
+
+        .hero-sub {
+            max-width: 560px;
+            color: var(--text-2);
+            font-size: clamp(1rem, 2.2vw, 1.18rem);
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: heroRise 0.9s ease forwards 0.55s;
+        }
+
+        .hero-sub strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: heroRise 0.9s ease forwards 0.7s;
+        }
+
+        .btn-ink {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.95rem 2.1rem;
+            border-radius: 100px;
+            background: var(--ink-wash);
+            color: #fff;
+            font-family: var(--body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.35);
+        }
+
+        .btn-ink:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.95rem 1.9rem;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: rgba(26, 26, 31, 0.6);
+            color: var(--text-2);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+            transform: translateY(-2px);
+        }
+
+        @keyframes heroRise {
+            from { opacity: 0; transform: translateY(26px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.2rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.55rem;
+            opacity: 0;
+            animation: heroRise 0.9s ease forwards 1.1s;
+        }
+
+        .scroll-hint span {
+            font-size: 0.68rem;
+            color: var(--text-3);
+            letter-spacing: 0.2em;
+            /* compensate the trailing letter-space so the word reads optically centered */
+            padding-left: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .scroll-hint .line {
+            width: 1.5px;
+            height: 34px;
+            border-radius: 1px;
+            background: linear-gradient(to bottom, var(--violet), transparent);
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.3; transform: scaleY(0.5); }
+        }
+
+        /* ========================
+           SHARED
+           ======================== */
+        .section {
+            position: relative;
+            z-index: 2;
+            padding: 5.5rem 1.5rem;
+        }
+
+        .wrap { max-width: 1080px; margin: 0 auto; }
+
+        .sec-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.26em;
+            text-transform: uppercase;
+            background: var(--ink-wash);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .sec-title {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: clamp(1.9rem, 4.5vw, 3rem);
+            line-height: 1.12;
+            letter-spacing: -0.01em;
+        }
+
+        .sec-copy {
+            color: var(--text-2);
+            max-width: 560px;
+            margin-top: 1.1rem;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .d1 { transition-delay: 0.08s; }
+        .d2 { transition-delay: 0.16s; }
+        .d3 { transition-delay: 0.24s; }
+        .d4 { transition-delay: 0.32s; }
+
+        /* ========================
+           FEATURES (what's coming)
+           ======================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.4rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 2.2rem 2rem;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s, box-shadow 0.35s;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.4s;
+            background: radial-gradient(ellipse at 18% 12%, var(--tint), transparent 60%);
+            pointer-events: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: #34343f;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-card[data-tint="violet"] { --tint: rgba(168, 85, 247, 0.14); --fc: var(--violet); }
+        .feature-card[data-tint="cyan"]   { --tint: rgba(6, 182, 212, 0.13);  --fc: var(--cyan); }
+        .feature-card[data-tint="pink"]   { --tint: rgba(236, 72, 153, 0.13); --fc: var(--pink); }
+        .feature-card[data-tint="gold"]   { --tint: rgba(212, 168, 67, 0.13); --fc: var(--gold); }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: color-mix(in srgb, var(--fc) 14%, transparent);
+            border: 1px solid color-mix(in srgb, var(--fc) 30%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.35rem;
+        }
+
+        .feature-icon svg { width: 25px; height: 25px; }
+
+        .feature-card h3 {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-card p {
+            color: var(--text-2);
+            font-size: 0.93rem;
+        }
+
+        .feature-card .tag {
+            display: inline-block;
+            margin-top: 1.2rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--fc);
+            background: color-mix(in srgb, var(--fc) 12%, transparent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+        }
+
+        /* ========================
+           INK SWATCHES
+           ======================== */
+        .swatch-section { padding-bottom: 6rem; }
+
+        .swatch-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .swatch-hint {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        a.swatch-hint:hover { color: var(--text); }
+
+        .swatch-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2.6rem;
+            overflow-x: auto;
+            padding: 0.75rem 0.25rem 1.75rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--elevated) transparent;
+        }
+
+        .swatch-row::-webkit-scrollbar { height: 8px; }
+        .swatch-row::-webkit-scrollbar-track { background: transparent; }
+        .swatch-row::-webkit-scrollbar-thumb {
+            background: var(--elevated);
+            border-radius: 100px;
+        }
+
+        .swatch-card {
+            scroll-snap-align: start;
+            flex: 0 0 185px;
+            display: block;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.3rem 1.2rem 1.35rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
+        }
+
+        .swatch-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+        }
+
+        .swatch {
+            position: relative;
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            margin: 0 auto 1.15rem;
+            background: var(--sw);
+            box-shadow:
+                inset 0 -10px 22px rgba(0, 0, 0, 0.35),
+                inset 0 8px 16px rgba(255, 255, 255, 0.18),
+                0 12px 28px color-mix(in srgb, var(--sw-shadow) 45%, transparent);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .swatch-card:hover .swatch { transform: scale(1.08) rotate(-3deg); }
+
+        /* gloss highlight */
+        .swatch::after {
+            content: '';
+            position: absolute;
+            top: 12%;
+            left: 16%;
+            width: 34%;
+            height: 22%;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+            transform: rotate(-18deg);
+        }
+
+        .swatch-card h4 {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.02rem;
+            letter-spacing: 0.01em;
+        }
+
+        .swatch-card .kind {
+            display: block;
+            margin-top: 0.3rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-3);
+        }
+
+        /* ========================
+           RECIPES BAND
+           ======================== */
+        .recipe-band {
+            background: linear-gradient(180deg, var(--bg) 0%, #131318 50%, var(--bg) 100%);
+        }
+
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.4rem;
+            margin-top: 3rem;
+        }
+
+        .recipe-card {
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .recipe-pour {
+            height: 130px;
+            background: var(--pour);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* liquid sheen sweeping across the pour */
+        .recipe-pour::after {
+            content: '';
+            position: absolute;
+            inset: -60% -30%;
+            background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.16) 50%, transparent 58%);
+            transform: translateX(-70%);
+            transition: transform 0.9s ease;
+        }
+
+        .recipe-card:hover .recipe-pour::after { transform: translateX(70%); }
+
+        .recipe-body { padding: 1.5rem 1.5rem 1.6rem; }
+
+        .recipe-body h4 {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.12rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .recipe-body p {
+            color: var(--text-2);
+            font-size: 0.88rem;
+        }
+
+        /* ========================
+           CTA
+           ======================== */
+        .cta-section {
+            text-align: center;
+            padding: 6.5rem 1.5rem 7rem;
+        }
+
+        .cta-logo {
+            width: 88px;
+            border-radius: 22%;
+            margin: 0 auto 1.9rem;
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.4), 0 14px 34px rgba(0, 0, 0, 0.55);
+        }
+
+        .cta-section .sec-copy {
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.4rem;
+        }
+
+        .cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        /* ========================
+           FOOTER
+           ======================== */
+        footer {
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid var(--border);
+            padding: 3rem 1.5rem;
+        }
+
+        .footer-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-3);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.75rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-size: 0.86rem;
+            color: var(--text-2);
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--text-3);
+        }
+
+        /* ========================
+           RESPONSIVE
+           ======================== */
+        @media (max-width: 820px) {
+            .features-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+            .recipe-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 0.75rem 1rem; }
+            .nav-brand span { display: none; }
+            .footer-inner { flex-direction: column; text-align: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.01ms !important;
+            }
+            .hero-logo, .hero h1, .hero-sub, .hero-actions, .scroll-hint { opacity: 1; transform: none; }
+            .reveal { opacity: 1; transform: none; }
+            .drips { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient glows -->
+    <div class="ambient" aria-hidden="true">
+        <div class="glow glow-violet"></div>
+        <div class="glow glow-cyan"></div>
+        <div class="glow glow-pink"></div>
+    </div>
+
+    <!-- Dripping ink (recreated from the app's Discover screen) -->
+    <div class="drips" id="drips" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="nav-back"><span class="arr">&#8592;</span> LPK Apps</a>
+        <a href="#" class="nav-brand">
+            <img src="assets/wcinks-logo.png" alt="WC INKs logo">
+            <span>WC INKs</span>
+        </a>
+        <span class="nav-status">In Development</span>
+    </nav>
+
+    <main>
+        <!-- ====== HERO ====== -->
+        <header class="hero">
+            <img class="hero-logo" src="assets/wcinks-logo.png" alt="WC INKs logo — iridescent liquid chrome lettering">
+            <h1>Ink that <span class="flow">flows.</span></h1>
+            <p class="hero-sub">A shop and community built for cup creators. Premium ink drops, blend recipes, technique guides, and a showcase for the makers behind the pours — <strong>all in one app.</strong></p>
+            <div class="hero-actions">
+                <a href="mailto:hello@lpkapps.com?subject=Notify%20me%20about%20WC%20INKs" class="btn-ink">Get notified at launch</a>
+                <a href="https://www.facebook.com/groups/4335134573397129" target="_blank" rel="noopener" class="btn-ghost">Join the VIP group &#8599;</a>
+            </div>
+            <div class="scroll-hint" aria-hidden="true">
+                <span>Scroll</span>
+                <div class="line"></div>
+            </div>
+        </header>
+
+        <!-- ====== WHAT'S COMING ====== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">What's Coming</span>
+                    <h2 class="sec-title">Everything a creator needs.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">WC INKs brings the whole craft together — the inks, the know-how, and the community that makes it fun.</p>
+                </div>
+
+                <div class="features-grid">
+                    <article class="feature-card reveal d1" data-tint="violet">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 25 25" fill="none" aria-hidden="true">
+                                <path d="M5 9h15l-1.5 12.5a2 2 0 01-2 1.5H8.5a2 2 0 01-2-1.5L5 9z" stroke="#a855f7" stroke-width="1.8" fill="rgba(168,85,247,0.15)"/>
+                                <path d="M8.5 9V6.5a4 4 0 018 0V9" stroke="#a855f7" stroke-width="1.8" fill="none"/>
+                            </svg>
+                        </div>
+                        <h3>The Shop</h3>
+                        <p>Browse the full ink lineup, catch limited collection drops, and check out without ever leaving the app.</p>
+                        <span class="tag">New drops</span>
+                    </article>
+
+                    <article class="feature-card reveal d2" data-tint="cyan">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 25 25" fill="none" aria-hidden="true">
+                                <circle cx="9" cy="9" r="5.5" stroke="#06b6d4" stroke-width="1.8" fill="rgba(6,182,212,0.15)"/>
+                                <circle cx="16.5" cy="14" r="5.5" stroke="#06b6d4" stroke-width="1.8" fill="rgba(6,182,212,0.1)"/>
+                            </svg>
+                        </div>
+                        <h3>Blend Recipes</h3>
+                        <p>Galaxy Blend, Sunset Fade, Neon Nights — step-by-step color recipes for pours that come out clean every time.</p>
+                        <span class="tag">Guided mixes</span>
+                    </article>
+
+                    <article class="feature-card reveal d3" data-tint="pink">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 25 25" fill="none" aria-hidden="true">
+                                <path d="M12.5 4v10M12.5 14q-4 0-5.5-4M12.5 11q4 0 5.5-5" stroke="#ec4899" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                                <path d="M7 21h11M9 17.5h7" stroke="#ec4899" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3>Technique Guides</h3>
+                        <p>Wet-on-wet gradients, chrome finishes, color theory — level up from first pour to signature style.</p>
+                        <span class="tag">Learn the craft</span>
+                    </article>
+
+                    <article class="feature-card reveal d4" data-tint="gold">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 25 25" fill="none" aria-hidden="true">
+                                <circle cx="8.5" cy="9" r="3" stroke="#d4a843" stroke-width="1.8" fill="rgba(212,168,67,0.15)"/>
+                                <circle cx="16.5" cy="9" r="3" stroke="#d4a843" stroke-width="1.8" fill="rgba(212,168,67,0.15)"/>
+                                <path d="M3.5 20c.7-3.4 2.7-5 5-5s4.3 1.6 5 5M11.5 20c.7-3.4 2.7-5 5-5s4.3 1.6 5 5" stroke="#d4a843" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3>Creator Showcase</h3>
+                        <p>A spotlight for the community — cup showcases, featured affiliates, and the makers pushing the medium forward.</p>
+                        <span class="tag">Community</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== INK SWATCHES ====== -->
+        <section class="section swatch-section">
+            <div class="wrap">
+                <div class="swatch-head reveal">
+                    <div>
+                        <span class="sec-label">The Lineup</span>
+                        <h2 class="sec-title">Colors with attitude.</h2>
+                        <p class="sec-copy">Straight from the real shelves — multichromes, neons, glitters and shimmers, every one formulated for bold, glossy finishes. Tap a color to see it pour.</p>
+                    </div>
+                    <a class="swatch-hint" href="https://www.wcinks.com" target="_blank" rel="noopener">Shop the full lineup &#8599;</a>
+                </div>
+
+                <div class="swatch-row reveal d1">
+                    <a class="swatch-card" href="https://www.wcinks.com/products/fyrestrike" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #c43a96, #6e2055 72%); --sw-shadow: #c43a96;"></div>
+                        <h4>Fyrestrike</h4>
+                        <span class="kind">MultiChrome</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/dreamfyre" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #4aa8e8, #1f4f8a 72%); --sw-shadow: #4aa8e8;"></div>
+                        <h4>Dreamfyre</h4>
+                        <span class="kind">MultiChrome</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/lyra" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #a5308b, #5e1f33 72%); --sw-shadow: #a5308b;"></div>
+                        <h4>Lyra</h4>
+                        <span class="kind">MultiChrome</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/seasmoke" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #c4717f, #6d2f3c 72%); --sw-shadow: #c4717f;"></div>
+                        <h4>Seasmoke</h4>
+                        <span class="kind">MultiChrome</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/trillion" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #8df0cf, #2f9e78 72%); --sw-shadow: #8df0cf;"></div>
+                        <h4>Trillion</h4>
+                        <span class="kind">Mystic Diamonds</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/emerald" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #92dca3, #159c77 72%); --sw-shadow: #34d399;"></div>
+                        <h4>Emerald</h4>
+                        <span class="kind">Mystic Diamonds</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/princess" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #b656af, #8c2680 72%); --sw-shadow: #b656af;"></div>
+                        <h4>Princess</h4>
+                        <span class="kind">Mystic Diamonds</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/electric-eel" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #68d156, #1d7a1a 72%); --sw-shadow: #68d156;"></div>
+                        <h4>Electric Eel</h4>
+                        <span class="kind">Neon</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/yellow-tang" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #d6e34a, #9eba29 72%); --sw-shadow: #d6e34a;"></div>
+                        <h4>Yellow Tang</h4>
+                        <span class="kind">Neon</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/moonrise-pink-tetra" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #e0688a, #a3214a 72%); --sw-shadow: #e0688a;"></div>
+                        <h4>Moonrise Pink Tetra</h4>
+                        <span class="kind">Neon</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/rosie-freedom-glitter-x-wc-inks" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #d98a8a, #8f3a42 72%); --sw-shadow: #d98a8a;"></div>
+                        <h4>Rosie</h4>
+                        <span class="kind">Glitter &times; Freedom</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/microchip-freedom-glitter-x-wc-inks" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #e3e6ea, #84898f 72%); --sw-shadow: #c0c5cc;"></div>
+                        <h4>Microchip</h4>
+                        <span class="kind">Glitter &times; Freedom</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/candy-apple-red" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #b03340, #6e1c24 72%); --sw-shadow: #b03340;"></div>
+                        <h4>Candy Apple Red</h4>
+                        <span class="kind">Shimmer</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/mermaid-sapphire" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #2e7d8a, #123f4a 72%); --sw-shadow: #2e7d8a;"></div>
+                        <h4>Mermaid Sapphire</h4>
+                        <span class="kind">Shimmer</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/champagne-toast" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #ead9ab, #a9904f 72%); --sw-shadow: #d4a843;"></div>
+                        <h4>Champagne Toast</h4>
+                        <span class="kind">Shimmer</span>
+                    </a>
+                    <a class="swatch-card" href="https://www.wcinks.com/products/gold-rush" target="_blank" rel="noopener">
+                        <div class="swatch" style="--sw: radial-gradient(circle at 35% 30%, #c9a94e, #84662e 72%); --sw-shadow: #c9a94e;"></div>
+                        <h4>Gold Rush</h4>
+                        <span class="kind">Alloy</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== RECIPES ====== -->
+        <section class="section recipe-band">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">Blend Recipes</span>
+                    <h2 class="sec-title">Pours worth copying.</h2>
+                </div>
+
+                <div class="recipe-grid">
+                    <article class="recipe-card reveal d1">
+                        <div class="recipe-pour" style="--pour: linear-gradient(120deg, #1f4f8a, #8c2680 45%, #b8c4cf)"></div>
+                        <div class="recipe-body">
+                            <h4>Galaxy Blend</h4>
+                            <p>Dreamfyre + Princess with a drop of Microchip glitter for a cosmic effect.</p>
+                        </div>
+                    </article>
+                    <article class="recipe-card reveal d2">
+                        <div class="recipe-pour" style="--pour: linear-gradient(120deg, #6e1c24, #b03340 38%, #c9a94e 72%, #d6e34a)"></div>
+                        <div class="recipe-body">
+                            <h4>Sunset Fade</h4>
+                            <p>Blend Candy Apple Red into Gold Rush with Yellow Tang highlights.</p>
+                        </div>
+                    </article>
+                    <article class="recipe-card reveal d3">
+                        <div class="recipe-pour" style="--pour: linear-gradient(120deg, #e0688a, #d6e34a 50%, #1d931a)"></div>
+                        <div class="recipe-body">
+                            <h4>Neon Nights</h4>
+                            <p>Moonrise Pink Tetra + Yellow Tang + Electric Eel for a retro neon glow.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== CTA ====== -->
+        <section class="cta-section">
+            <img class="cta-logo" src="assets/wcinks-logo.png" alt="" aria-hidden="true">
+            <h2 class="sec-title reveal">The ink is still drying.</h2>
+            <p class="sec-copy reveal d1">WC INKs is in active development. Want the first pour? Get on the list and we'll let you know the moment it drops.</p>
+            <div class="cta-actions reveal d2">
+                <a href="mailto:hello@lpkapps.com?subject=Notify%20me%20about%20WC%20INKs" class="btn-ink">Get notified at launch</a>
+                <a href="rootword.html" class="btn-ghost">Meanwhile, try Root Word &#8594;</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">WC INKs</span>
+            <ul class="footer-links">
+                <li><a href="index.html">LPK Apps</a></li>
+                <li><a href="rootword.html">Root Word</a></li>
+                <li><a href="https://www.wcinks.com" target="_blank" rel="noopener">Shop Inks &#8599;</a></li>
+                <li><a href="mailto:hello@lpkapps.com">Contact</a></li>
+            </ul>
+            <span class="footer-copy">&copy; 2026 LPK Apps. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12 }
+        );
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // Ink drips — same palette, sizing and pacing as the app's InkDrips component
+        const DRIP_PALETTE = [
+            [94, 231, 255],   // cyan
+            [199, 125, 255],  // purple
+            [255, 110, 180],  // pink
+            [136, 140, 248],  // indigo
+            [56, 189, 248],   // sky blue
+            [244, 114, 182],  // rose
+            [168, 85, 247],   // violet
+        ];
+
+        const dripsEl = document.getElementById('drips');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!reduceMotion && dripsEl) {
+            const NUM_DRIPS = window.innerWidth < 700 ? 16 : 28;
+            for (let i = 0; i < NUM_DRIPS; i++) {
+                const [r, g, b] = DRIP_PALETTE[Math.floor(Math.random() * DRIP_PALETTE.length)];
+                const w = 1.5 + Math.random() * 3.5;
+                const h = 30 + Math.random() * 90;
+                const alpha = 0.12 + Math.random() * 0.22;
+                const dur = 22 + Math.random() * 26;
+                const delay = Math.random() * 6;
+
+                const drip = document.createElement('div');
+                drip.className = 'drip';
+                drip.style.cssText =
+                    'left:' + (Math.random() * 100).toFixed(2) + '%;' +
+                    'width:' + w.toFixed(1) + 'px;' +
+                    'height:' + h.toFixed(0) + 'px;' +
+                    '--w:' + w.toFixed(1) + 'px;' +
+                    '--c: rgba(' + r + ',' + g + ',' + b + ',' + alpha.toFixed(3) + ');' +
+                    '--c-faint: rgba(' + r + ',' + g + ',' + b + ',' + (alpha * 0.3).toFixed(3) + ');' +
+                    '--dur:' + dur.toFixed(1) + 's;' +
+                    '--delay:' + delay.toFixed(1) + 's;';
+                drip.innerHTML = '<div class="streak"></div><div class="bead"></div><div class="shine"></div>';
+                dripsEl.appendChild(drip);
+            }
+        }
+    </script>
+</body>
+</html>

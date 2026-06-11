@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Word — Cozy Word Puzzles That Plant Real Trees</title>
+    <meta name="description" content="Root Word is a cozy word puzzle game by LPK Apps. Solve word searches, word wheels and crosswords, grow rare plants, and plant real trees as you play.">
+    <link rel="icon" href="assets/rootword-icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* sampled from the App Store art so screenshots blend seamlessly */
+            --parchment: #f2ebe1;
+            --parchment-deep: #e9e0d1;
+            --cream: #faf5ec;
+            --ink: #3c3322;
+            --ink-soft: #6e6450;
+            --ink-faint: #9c9078;
+            --green: #4d6142;
+            --green-deep: #3a4a32;
+            --green-soft: rgba(77, 97, 66, 0.12);
+            --gold: #b98c3a;
+            --gold-bright: #d9a94e;
+            --bark: #272118;
+            --bark-soft: #38301f;
+            --tile-light: #ecdcba;
+            --tile-dark: #d6c094;
+            --tile-edge: #b59a66;
+            --line: rgba(60, 51, 34, 0.12);
+
+            --serif: 'Fraunces', Georgia, serif;
+            --sans: 'Nunito Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--parchment);
+            color: var(--ink);
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--green);
+            color: var(--cream);
+        }
+
+        /* Paper grain */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        img { display: block; max-width: 100%; }
+
+        /* ========================
+           NAV
+           ======================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.85rem 1.75rem;
+            background: rgba(242, 235, 225, 0.82);
+            backdrop-filter: blur(14px) saturate(1.1);
+            -webkit-backdrop-filter: blur(14px) saturate(1.1);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            text-decoration: none;
+            transition: color 0.25s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover { color: var(--ink); }
+        .nav-back .arr { transition: transform 0.25s; }
+        .nav-back:hover .arr { transform: translateX(-3px); }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .nav-brand img {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            box-shadow: 0 2px 6px rgba(60, 51, 34, 0.25);
+        }
+
+        .nav-brand span {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .nav-cta {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--cream);
+            background: var(--green);
+            padding: 0.55rem 1.3rem;
+            border-radius: 100px;
+            text-decoration: none;
+            box-shadow: 0 3px 10px rgba(77, 97, 66, 0.35);
+            transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            background: var(--green-deep);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 16px rgba(77, 97, 66, 0.4);
+        }
+
+        /* ========================
+           HERO
+           ======================== */
+        .hero {
+            position: relative;
+            padding: 9rem 1.5rem 4.5rem;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* soft radial light behind the grove */
+        .hero::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 58%;
+            width: 900px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse, rgba(217, 169, 78, 0.16) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: riseIn 0.7s ease forwards 0.1s;
+        }
+
+        .hero-kicker::before,
+        .hero-kicker::after {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: var(--green);
+            opacity: 0.45;
+        }
+
+        /* Letter tiles */
+        .tile-word {
+            display: flex;
+            justify-content: center;
+            gap: clamp(0.3rem, 1.2vw, 0.55rem);
+            margin-bottom: clamp(0.3rem, 1.2vw, 0.55rem);
+        }
+
+        .tile {
+            --tile-size: clamp(2.6rem, 8.5vw, 4.6rem);
+            width: var(--tile-size);
+            height: var(--tile-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--serif);
+            font-weight: 700;
+            font-size: calc(var(--tile-size) * 0.58);
+            color: #4a3a20;
+            background: linear-gradient(160deg, var(--tile-light) 0%, var(--tile-dark) 100%);
+            border: 1px solid var(--tile-edge);
+            border-radius: calc(var(--tile-size) * 0.18);
+            box-shadow:
+                inset 0 2px 0 rgba(255, 252, 240, 0.65),
+                inset 0 -3px 0 rgba(122, 96, 52, 0.28),
+                0 4px 10px rgba(60, 51, 34, 0.22);
+            opacity: 0;
+            transform: translateY(-26px) rotate(-4deg);
+            animation: tileSettle 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .tile:nth-child(1) { animation-delay: 0.25s; }
+        .tile:nth-child(2) { animation-delay: 0.33s; }
+        .tile:nth-child(3) { animation-delay: 0.41s; }
+        .tile:nth-child(4) { animation-delay: 0.49s; }
+        .tile-word:nth-of-type(2) .tile:nth-child(1) { animation-delay: 0.57s; }
+        .tile-word:nth-of-type(2) .tile:nth-child(2) { animation-delay: 0.65s; }
+        .tile-word:nth-of-type(2) .tile:nth-child(3) { animation-delay: 0.73s; }
+        .tile-word:nth-of-type(2) .tile:nth-child(4) { animation-delay: 0.81s; }
+
+        @keyframes tileSettle {
+            0% { opacity: 0; transform: translateY(-26px) rotate(-4deg); }
+            100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+        }
+
+        .hero-tagline {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 500;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            color: var(--green-deep);
+            margin: 1.75rem auto 0.9rem;
+            opacity: 0;
+            animation: riseIn 0.7s ease forwards 0.9s;
+        }
+
+        .hero-sub {
+            max-width: 520px;
+            margin: 0 auto 2.25rem;
+            color: var(--ink-soft);
+            font-size: 1rem;
+            opacity: 0;
+            animation: riseIn 0.7s ease forwards 1.05s;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: riseIn 0.7s ease forwards 1.2s;
+        }
+
+        /* App Store badge */
+        .store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: #1a1611;
+            color: #f5f1e8;
+            padding: 0.7rem 1.4rem 0.7rem 1.15rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 4px 14px rgba(39, 33, 24, 0.3);
+        }
+
+        .store-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(39, 33, 24, 0.35);
+        }
+
+        .store-badge svg { width: 26px; height: 26px; flex-shrink: 0; }
+
+        .store-badge .badge-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.15;
+            text-align: left;
+        }
+
+        .store-badge .badge-text small {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            opacity: 0.8;
+        }
+
+        .store-badge .badge-text strong {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .hero-secondary {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--green);
+            text-decoration: none;
+            border-bottom: 1.5px solid rgba(77, 97, 66, 0.35);
+            padding-bottom: 2px;
+            transition: border-color 0.25s, color 0.25s;
+        }
+
+        .hero-secondary:hover {
+            color: var(--green-deep);
+            border-color: var(--green-deep);
+        }
+
+        /* The grove: icon flanked by plants */
+        .hero-grove {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: clamp(0.75rem, 3vw, 2.5rem);
+            margin: 3.5rem auto 0;
+            max-width: 880px;
+            opacity: 0;
+            animation: riseIn 0.9s ease forwards 1.35s;
+        }
+
+        .hero-grove .plant {
+            height: clamp(90px, 16vw, 190px);
+            width: auto;
+            filter: drop-shadow(0 10px 14px rgba(60, 51, 34, 0.18));
+            animation: floatSway 6s ease-in-out infinite;
+        }
+
+        .hero-grove .plant:nth-child(1) { animation-delay: 0s; height: clamp(70px, 13vw, 150px); }
+        .hero-grove .plant:nth-child(2) { animation-delay: 1.2s; }
+        .hero-grove .plant:nth-child(4) { animation-delay: 0.6s; }
+        .hero-grove .plant:nth-child(5) { animation-delay: 1.8s; height: clamp(70px, 13vw, 150px); }
+
+        .hero-grove .grove-icon {
+            width: clamp(110px, 18vw, 180px);
+            height: auto;
+            border-radius: 24%;
+            box-shadow:
+                0 18px 40px rgba(60, 51, 34, 0.35),
+                0 4px 12px rgba(60, 51, 34, 0.2);
+            margin-bottom: 0.75rem;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hero-grove .grove-icon:hover { transform: scale(1.04) rotate(-1.5deg); }
+
+        @keyframes floatSway {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-9px) rotate(1.2deg); }
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Falling leaves */
+        .leaves {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .leaf {
+            position: absolute;
+            top: -40px;
+            opacity: 0;
+            animation: leafFall linear infinite;
+        }
+
+        .leaf svg { width: 100%; height: 100%; }
+
+        @keyframes leafFall {
+            0%   { opacity: 0; transform: translateY(0) translateX(0) rotate(0deg); }
+            8%   { opacity: 0.8; }
+            90%  { opacity: 0.7; }
+            100% { opacity: 0; transform: translateY(110vh) translateX(60px) rotate(340deg); }
+        }
+
+        /* ========================
+           SHARED
+           ======================== */
+        .section {
+            position: relative;
+            padding: 5.5rem 1.5rem;
+        }
+
+        .wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .sec-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.9rem;
+        }
+
+        .sec-title {
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: clamp(1.8rem, 4.2vw, 2.7rem);
+            line-height: 1.18;
+            letter-spacing: -0.01em;
+        }
+
+        .sec-copy {
+            color: var(--ink-soft);
+            max-width: 560px;
+            margin-top: 1rem;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .d1 { transition-delay: 0.08s; }
+        .d2 { transition-delay: 0.16s; }
+        .d3 { transition-delay: 0.24s; }
+        .d4 { transition-delay: 0.32s; }
+
+        /* ========================
+           FEATURES
+           ======================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.4rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--cream);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 2.1rem 1.9rem;
+            box-shadow: 0 3px 14px rgba(60, 51, 34, 0.07);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .feature-card:nth-child(2) { transform: rotate(0.6deg); }
+        .feature-card:nth-child(3) { transform: rotate(-0.5deg); }
+
+        .feature-card:hover {
+            transform: translateY(-6px) rotate(0deg);
+            box-shadow: 0 14px 32px rgba(60, 51, 34, 0.13);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--green-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.3rem;
+        }
+
+        .feature-icon svg { width: 28px; height: 28px; }
+
+        .feature-card h3 {
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 1.28rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .feature-card p {
+            color: var(--ink-soft);
+            font-size: 0.93rem;
+        }
+
+        .feature-card .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+
+        .feature-card .chip {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--green-deep);
+            background: var(--green-soft);
+            border-radius: 100px;
+            padding: 0.26rem 0.7rem;
+        }
+
+        /* ========================
+           FOREST BAND (dark)
+           ======================== */
+        .forest-band {
+            background:
+                radial-gradient(ellipse 700px 420px at 22% 30%, rgba(217, 169, 78, 0.12), transparent 70%),
+                var(--bark);
+            color: #efe7d6;
+            overflow: hidden;
+        }
+
+        .forest-inner {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .forest-band .sec-label { color: var(--gold-bright); }
+
+        .forest-band .sec-title { color: #f5efe2; }
+
+        .forest-band .sec-copy { color: rgba(239, 231, 214, 0.72); }
+
+        .forest-points {
+            list-style: none;
+            margin-top: 1.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .forest-points li {
+            display: flex;
+            gap: 0.9rem;
+            align-items: flex-start;
+            font-size: 0.96rem;
+            color: rgba(239, 231, 214, 0.85);
+        }
+
+        .forest-points .dot {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(217, 169, 78, 0.16);
+            border: 1px solid rgba(217, 169, 78, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .forest-points .dot svg { width: 13px; height: 13px; }
+
+        .forest-shot {
+            justify-self: center;
+            position: relative;
+        }
+
+        .forest-shot img {
+            width: min(330px, 100%);
+            border-radius: 22px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            transform: rotate(1.6deg);
+            transition: transform 0.4s ease;
+        }
+
+        .forest-shot:hover img { transform: rotate(0deg) scale(1.015); }
+
+        /* sparkles */
+        .spark {
+            position: absolute;
+            color: var(--gold-bright);
+            animation: sparkle 3.2s ease-in-out infinite;
+        }
+
+        .spark svg { width: 100%; height: 100%; display: block; }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.15; transform: scale(0.8); }
+            50% { opacity: 0.9; transform: scale(1.1); }
+        }
+
+        /* ========================
+           PLANT ALBUM
+           ======================== */
+        .album-section { padding-bottom: 6rem; }
+
+        .album-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .album-hint {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .plant-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2.6rem;
+            overflow-x: auto;
+            padding: 1rem 0.25rem 1.75rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--tile-edge) transparent;
+        }
+
+        .plant-row::-webkit-scrollbar { height: 8px; }
+        .plant-row::-webkit-scrollbar-track { background: transparent; }
+        .plant-row::-webkit-scrollbar-thumb {
+            background: var(--tile-edge);
+            border-radius: 100px;
+        }
+
+        .plant-card {
+            scroll-snap-align: start;
+            flex: 0 0 200px;
+            background: var(--cream);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 1.5rem 1.2rem 1.4rem;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(60, 51, 34, 0.07);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .plant-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 34px rgba(60, 51, 34, 0.14);
+        }
+
+        .plant-card img {
+            height: 130px;
+            width: auto;
+            margin: 0 auto 1rem;
+            filter: drop-shadow(0 6px 8px rgba(60, 51, 34, 0.16));
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .plant-card:hover img { transform: scale(1.09); }
+
+        .plant-card h4 {
+            font-family: var(--serif);
+            font-weight: 600;
+            font-size: 1.08rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .plant-card .stars {
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            color: var(--gold);
+        }
+
+        .plant-card .tier {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+
+        .plant-card.epic {
+            background: linear-gradient(170deg, #faf4e6 0%, #f3e6c9 100%);
+            border-color: rgba(185, 140, 58, 0.35);
+        }
+
+        .plant-card.epic .tier { color: var(--gold); }
+
+        /* ========================
+           ROOTY
+           ======================== */
+        .rooty-section { background: var(--parchment-deep); }
+
+        .rooty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.6rem;
+            margin-top: 3rem;
+        }
+
+        .rooty-card {
+            background: var(--cream);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 0.9rem 0.9rem 1.15rem;
+            box-shadow: 0 5px 18px rgba(60, 51, 34, 0.1);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .rooty-card:nth-child(1) { transform: rotate(-1.2deg); }
+        .rooty-card:nth-child(2) { transform: rotate(0.9deg); }
+        .rooty-card:nth-child(3) { transform: rotate(0.7deg); }
+        .rooty-card:nth-child(4) { transform: rotate(-0.8deg); }
+
+        .rooty-card:hover {
+            transform: rotate(0deg) translateY(-6px) scale(1.015);
+            box-shadow: 0 16px 36px rgba(60, 51, 34, 0.16);
+        }
+
+        .rooty-card img {
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        .rooty-card figcaption {
+            margin-top: 0.85rem;
+            text-align: center;
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+        }
+
+        /* ========================
+           SCREENSHOT GALLERY
+           ======================== */
+        .shots-row {
+            display: flex;
+            gap: 1.4rem;
+            margin-top: 2.6rem;
+            overflow-x: auto;
+            padding: 0.5rem 0.25rem 1.75rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--tile-edge) transparent;
+        }
+
+        .shots-row::-webkit-scrollbar { height: 8px; }
+        .shots-row::-webkit-scrollbar-track { background: transparent; }
+        .shots-row::-webkit-scrollbar-thumb {
+            background: var(--tile-edge);
+            border-radius: 100px;
+        }
+
+        .shots-row img {
+            scroll-snap-align: center;
+            flex: 0 0 auto;
+            width: min(290px, 72vw);
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 26px rgba(60, 51, 34, 0.13);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .shots-row img:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(60, 51, 34, 0.18);
+        }
+
+        /* ========================
+           FINAL CTA
+           ======================== */
+        .cta-section {
+            text-align: center;
+            padding: 6.5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 760px;
+            height: 480px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse, rgba(217, 169, 78, 0.14) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .cta-rooty {
+            width: 96px;
+            height: 96px;
+            border-radius: 24%;
+            margin: 0 auto 1.75rem;
+            box-shadow: 0 12px 30px rgba(60, 51, 34, 0.3);
+        }
+
+        .cta-section .sec-title { margin-bottom: 0.9rem; }
+
+        .cta-section .sec-copy {
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.25rem;
+        }
+
+        /* ========================
+           FOOTER
+           ======================== */
+        footer {
+            background: var(--bark);
+            color: rgba(239, 231, 214, 0.66);
+            padding: 3.25rem 1.5rem;
+        }
+
+        .footer-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-word {
+            max-width: 320px;
+        }
+
+        .footer-word .wotd-label {
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--gold-bright);
+        }
+
+        .footer-word .wotd {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 1.05rem;
+            color: #efe7d6;
+            margin-top: 0.3rem;
+        }
+
+        .footer-word .wotd-def {
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.75rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 0.86rem;
+            color: rgba(239, 231, 214, 0.75);
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .footer-links a:hover { color: #f5efe2; }
+
+        .footer-copy { font-size: 0.78rem; }
+
+        /* ========================
+           RESPONSIVE
+           ======================== */
+        @media (max-width: 900px) {
+            .forest-inner {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .forest-shot { order: -1; }
+            .features-grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+        }
+
+        @media (max-width: 700px) {
+            .nav-brand span { display: none; }
+            nav { padding: 0.75rem 1rem; }
+            .nav-cta { padding: 0.5rem 1rem; }
+            .rooty-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+            .hero { padding-top: 7.5rem; }
+            .hero-grove .plant:nth-child(1),
+            .hero-grove .plant:nth-child(5) { display: none; }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .footer-word { max-width: none; }
+            .footer-links { justify-content: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.01ms !important;
+            }
+            .tile, .hero-kicker, .hero-tagline, .hero-sub, .hero-actions, .hero-grove { opacity: 1; transform: none; }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="nav-back"><span class="arr">&#8592;</span> LPK Apps</a>
+        <a href="#" class="nav-brand">
+            <img src="assets/rootword-icon.png" alt="Root Word app icon">
+            <span>Root Word</span>
+        </a>
+        <a href="#download" class="nav-cta">Get the app</a>
+    </nav>
+
+    <main>
+        <!-- ====== HERO ====== -->
+        <header class="hero">
+            <div class="leaves" aria-hidden="true" id="leaves"></div>
+
+            <p class="hero-kicker">A game by LPK Apps</p>
+
+            <h1 aria-label="Root Word">
+                <div class="tile-word" aria-hidden="true">
+                    <span class="tile">R</span><span class="tile">O</span><span class="tile">O</span><span class="tile">T</span>
+                </div>
+                <div class="tile-word" aria-hidden="true">
+                    <span class="tile">W</span><span class="tile">O</span><span class="tile">R</span><span class="tile">D</span>
+                </div>
+            </h1>
+
+            <p class="hero-tagline">Cozy word puzzles that plant real trees.</p>
+            <p class="hero-sub">Unwind with word searches, word wheels and crosswords set in soft, atmospheric worlds — and grow a forest that reaches beyond your screen.</p>
+
+            <div class="hero-actions" id="download">
+                <a href="#" class="store-badge" aria-label="Download Root Word on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
+                <a href="#rooty" class="hero-secondary">Meet Rooty &#8595;</a>
+            </div>
+
+            <div class="hero-grove" aria-hidden="true">
+                <img class="plant" src="assets/plants/frostbark.png" alt="">
+                <img class="plant" src="assets/plants/moonblossom.png" alt="">
+                <img class="grove-icon" src="assets/rootword-icon.png" alt="">
+                <img class="plant" src="assets/plants/embercrown.png" alt="">
+                <img class="plant" src="assets/plants/starweald.png" alt="">
+            </div>
+        </header>
+
+        <!-- ====== FEATURES ====== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">The Puzzles</span>
+                    <h2 class="sec-title">Relaxing by design.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">No timers shouting at you. No lives to lose. Just gentle puzzles, soft soundscapes, and the quiet satisfaction of a found word.</p>
+                </div>
+
+                <div class="features-grid">
+                    <article class="feature-card reveal d1">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                                <rect x="2" y="2" width="7" height="7" rx="2" fill="#4d6142" opacity=".8"/>
+                                <rect x="10.5" y="2" width="7" height="7" rx="2" fill="#4d6142" opacity=".45"/>
+                                <rect x="19" y="2" width="7" height="7" rx="2" fill="#4d6142" opacity=".65"/>
+                                <rect x="2" y="10.5" width="7" height="7" rx="2" fill="#4d6142" opacity=".5"/>
+                                <rect x="10.5" y="10.5" width="7" height="7" rx="2" fill="#4d6142" opacity=".85"/>
+                                <rect x="2" y="19" width="7" height="7" rx="2" fill="#4d6142" opacity=".6"/>
+                                <rect x="10.5" y="19" width="7" height="7" rx="2" fill="#4d6142" opacity=".4"/>
+                            </svg>
+                        </div>
+                        <h3>Three relaxing puzzle types</h3>
+                        <p>Sweep through cozy word searches, swipe letters around the word wheel, or settle in with a gentle crossword.</p>
+                        <div class="chips">
+                            <span class="chip">Word Search</span>
+                            <span class="chip">Word Wheel</span>
+                            <span class="chip">Crossword</span>
+                        </div>
+                    </article>
+
+                    <article class="feature-card reveal d2">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                                <rect x="3" y="5" width="22" height="20" rx="4" stroke="#4d6142" stroke-width="2" fill="none"/>
+                                <path d="M3 11h22" stroke="#4d6142" stroke-width="2"/>
+                                <path d="M9 2v5M19 2v5" stroke="#4d6142" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="14" cy="18" r="3.2" fill="#4d6142" opacity=".55"/>
+                            </svg>
+                        </div>
+                        <h3>A new puzzle every day</h3>
+                        <p>A fresh daily puzzle and a word of the day keep your streak — and your vocabulary — quietly growing.</p>
+                        <div class="chips">
+                            <span class="chip">Daily Puzzle</span>
+                            <span class="chip">Word of the Day</span>
+                        </div>
+                    </article>
+
+                    <article class="feature-card reveal d3">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                                <path d="M3 21q5-9 9-9t5 5 8-7" stroke="#4d6142" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <circle cx="21" cy="6" r="3" fill="#d9a94e" opacity=".75"/>
+                                <path d="M3 25h22" stroke="#4d6142" stroke-width="2" stroke-linecap="round" opacity=".4"/>
+                            </svg>
+                        </div>
+                        <h3>A new atmosphere every session</h3>
+                        <p>Lakeside docks at dusk, spring meadows in bloom — every theme pairs scenery with its own calm soundtrack.</p>
+                        <div class="chips">
+                            <span class="chip">Peaceful Places</span>
+                            <span class="chip">Spring Bloom</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== FOREST BAND ====== -->
+        <section class="section forest-band">
+            <div class="wrap forest-inner">
+                <div class="reveal">
+                    <span class="sec-label">Play With Purpose</span>
+                    <h2 class="sec-title">Your words grow a real forest.</h2>
+                    <p class="sec-copy">Every puzzle you solve nurtures the plants in your grove. And as your in-game forest flourishes, Root Word plants real trees in the real world.</p>
+                    <ul class="forest-points">
+                        <li>
+                            <span class="dot">
+                                <svg viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1v8M6.5 9q-3 0-4-3M6.5 7q3 0 4-4" stroke="#d9a94e" stroke-width="1.6" stroke-linecap="round"/><path d="M3 12h7" stroke="#d9a94e" stroke-width="1.6" stroke-linecap="round"/></svg>
+                            </span>
+                            Solve puzzles to grow seeds into flourishing plants
+                        </li>
+                        <li>
+                            <span class="dot">
+                                <svg viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="5" stroke="#d9a94e" stroke-width="1.6"/><circle cx="6.5" cy="6.5" r="1.6" fill="#d9a94e"/></svg>
+                            </span>
+                            Watch your forest constellation fill in, plant by plant
+                        </li>
+                        <li>
+                            <span class="dot">
+                                <svg viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 11L11 2M11 2H5M11 2v6" stroke="#d9a94e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            Earn real trees, planted in the real world as you play
+                        </li>
+                    </ul>
+                </div>
+                <div class="forest-shot reveal d2">
+                    <span class="spark" style="width:18px; height:18px; top:-12px; left:8%; animation-delay:0s">
+                        <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M9 0l1.8 7.2L18 9l-7.2 1.8L9 18l-1.8-7.2L0 9l7.2-1.8z"/></svg>
+                    </span>
+                    <span class="spark" style="width:12px; height:12px; bottom:18%; right:-22px; animation-delay:1.1s">
+                        <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M9 0l1.8 7.2L18 9l-7.2 1.8L9 18l-1.8-7.2L0 9l7.2-1.8z"/></svg>
+                    </span>
+                    <span class="spark" style="width:10px; height:10px; top:30%; left:-26px; animation-delay:2s">
+                        <svg viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M9 0l1.8 7.2L18 9l-7.2 1.8L9 18l-1.8-7.2L0 9l7.2-1.8z"/></svg>
+                    </span>
+                    <img src="assets/shots/01.jpg" alt="Root Word forest screen showing a constellation of grown plants and a real tree ready to plant" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== PLANT ALBUM ====== -->
+        <section class="section album-section">
+            <div class="wrap">
+                <div class="album-head reveal">
+                    <div>
+                        <span class="sec-label">The Plant Album</span>
+                        <h2 class="sec-title">Grow &amp; collect rare plants.</h2>
+                        <p class="sec-copy">Eighteen species to discover, from everyday clovers to once-in-a-forest legends. Each one grows from seed as you solve.</p>
+                    </div>
+                    <span class="album-hint" aria-hidden="true">Scroll &#8594;</span>
+                </div>
+
+                <div class="plant-row reveal d1">
+                    <article class="plant-card">
+                        <img src="assets/plants/dawnpetal.png" alt="Dawnpetal, a pink flowering plant" loading="lazy">
+                        <h4>Dawnpetal</h4>
+                        <div class="stars" aria-label="Common rarity">&#9733;</div>
+                        <span class="tier">Common</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/dewclover.png" alt="Dewclover, a lush green clover" loading="lazy">
+                        <h4>Dewclover</h4>
+                        <div class="stars" aria-label="Common rarity">&#9733;</div>
+                        <span class="tier">Common</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/glowmoss.png" alt="Glowmoss, a softly glowing moss" loading="lazy">
+                        <h4>Glowmoss</h4>
+                        <div class="stars" aria-label="Common rarity">&#9733;</div>
+                        <span class="tier">Common</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/duskfern.png" alt="Duskfern, a twilight-colored fern" loading="lazy">
+                        <h4>Duskfern</h4>
+                        <div class="stars" aria-label="Uncommon rarity">&#9733;&#9733;</div>
+                        <span class="tier">Uncommon</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/whisperbirch.png" alt="Whisperbirch, a slender pale birch" loading="lazy">
+                        <h4>Whisperbirch</h4>
+                        <div class="stars" aria-label="Uncommon rarity">&#9733;&#9733;</div>
+                        <span class="tier">Uncommon</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/moonblossom.png" alt="Moonblossom, pale blue bell-shaped flowers" loading="lazy">
+                        <h4>Moonblossom</h4>
+                        <div class="stars" aria-label="Rare rarity">&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Rare</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/frostbark.png" alt="Frostbark, a frost-covered tree" loading="lazy">
+                        <h4>Frostbark</h4>
+                        <div class="stars" aria-label="Rare rarity">&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Rare</span>
+                    </article>
+                    <article class="plant-card">
+                        <img src="assets/plants/velvetspire.png" alt="Velvetspire, a tall velvety plant" loading="lazy">
+                        <h4>Velvetspire</h4>
+                        <div class="stars" aria-label="Rare rarity">&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Rare</span>
+                    </article>
+                    <article class="plant-card epic">
+                        <img src="assets/plants/cinderleaf.png" alt="Cinderleaf, an ember-toned plant" loading="lazy">
+                        <h4>Cinderleaf</h4>
+                        <div class="stars" aria-label="Epic rarity">&#9733;&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Epic</span>
+                    </article>
+                    <article class="plant-card epic">
+                        <img src="assets/plants/embercrown.png" alt="Embercrown, a glowing autumn tree" loading="lazy">
+                        <h4>Embercrown</h4>
+                        <div class="stars" aria-label="Epic rarity">&#9733;&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Epic</span>
+                    </article>
+                    <article class="plant-card epic">
+                        <img src="assets/plants/starweald.png" alt="Starweald, a starlit mythical tree" loading="lazy">
+                        <h4>Starweald</h4>
+                        <div class="stars" aria-label="Epic rarity">&#9733;&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Epic</span>
+                    </article>
+                    <article class="plant-card epic">
+                        <img src="assets/plants/mythicroot.png" alt="Mythicroot, an ancient magical tree" loading="lazy">
+                        <h4>Mythicroot</h4>
+                        <div class="stars" aria-label="Epic rarity">&#9733;&#9733;&#9733;&#9733;</div>
+                        <span class="tier">Epic</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ROOTY ====== -->
+        <section class="section rooty-section" id="rooty">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">Your Companion</span>
+                    <h2 class="sec-title">Meet Rooty.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">Every forest needs a friend. Rooty welcomes you in, puzzles alongside you, and celebrates every word you find.</p>
+                </div>
+
+                <div class="rooty-grid">
+                    <figure class="rooty-card reveal d1">
+                        <img src="assets/rooty/welcome.jpg" alt="Rooty the tree stump waving hello with a welcome message" loading="lazy">
+                        <figcaption>&ldquo;Hi! My name is Rooty.&rdquo;</figcaption>
+                    </figure>
+                    <figure class="rooty-card reveal d2">
+                        <img src="assets/rooty/thinking.jpg" alt="Rooty thinking hard beside a stack of word books" loading="lazy">
+                        <figcaption>Deep in thought&hellip;</figcaption>
+                    </figure>
+                    <figure class="rooty-card reveal d3">
+                        <img src="assets/rooty/excited.jpg" alt="Rooty cheering with arms raised after a completed level" loading="lazy">
+                        <figcaption>&ldquo;Awesome work!&rdquo;</figcaption>
+                    </figure>
+                    <figure class="rooty-card reveal d4">
+                        <img src="assets/rooty/celebrating.jpg" alt="Rooty reading a book of new words surrounded by sparkles" loading="lazy">
+                        <figcaption>Every new word is a little celebration.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SCREENSHOTS ====== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="album-head reveal">
+                    <div>
+                        <span class="sec-label">Peek Inside</span>
+                        <h2 class="sec-title">See it for yourself.</h2>
+                    </div>
+                    <span class="album-hint" aria-hidden="true">Scroll &#8594;</span>
+                </div>
+
+                <div class="shots-row reveal d1">
+                    <img src="assets/shots/02.jpg" alt="Cozy word search puzzle in a forest lodge setting" loading="lazy">
+                    <img src="assets/shots/03.jpg" alt="Word wheel puzzle by a peaceful lakeside dock" loading="lazy">
+                    <img src="assets/shots/04.jpg" alt="Root Word home screen with daily puzzle and word of the day" loading="lazy">
+                    <img src="assets/shots/05.jpg" alt="Plant Album showing discovered species and rarity tiers" loading="lazy">
+                    <img src="assets/shots/06.jpg" alt="Root Word gameplay screenshot" loading="lazy">
+                    <img src="assets/shots/07.jpg" alt="Crossword puzzle in a spring bloom atmosphere" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== FINAL CTA ====== -->
+        <section class="cta-section">
+            <img class="cta-rooty" src="assets/rootword-icon.png" alt="" aria-hidden="true">
+            <h2 class="sec-title reveal">Ready to grow your forest?</h2>
+            <p class="sec-copy reveal d1">Pour something warm, find a comfy spot, and start with a single seed.</p>
+            <div class="reveal d2">
+                <a href="#" class="store-badge" aria-label="Download Root Word on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-word">
+                <span class="wotd-label">Word of the day</span>
+                <p class="wotd">culvert</p>
+                <p class="wotd-def">A small tunnel beneath a road that lets water pass unseen.</p>
+            </div>
+            <ul class="footer-links">
+                <li><a href="index.html">LPK Apps</a></li>
+                <li><a href="mailto:hello@lpkapps.com">Contact</a></li>
+            </ul>
+            <span class="footer-copy">&copy; 2026 LPK Apps. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12 }
+        );
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+        // Falling leaves in the hero
+        const leafColors = ['#6e8757', '#8a9a5b', '#b98c3a', '#a9744a'];
+        const leavesEl = document.getElementById('leaves');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!reduceMotion && leavesEl) {
+            for (let i = 0; i < 9; i++) {
+                const leaf = document.createElement('span');
+                leaf.className = 'leaf';
+                const size = 10 + (i % 4) * 4;
+                const color = leafColors[i % leafColors.length];
+                leaf.style.left = (4 + (i * 11)) % 96 + '%';
+                leaf.style.width = size + 'px';
+                leaf.style.height = size + 'px';
+                leaf.style.animationDuration = (9 + (i % 5) * 2.4) + 's';
+                leaf.style.animationDelay = (i * 1.7) + 's';
+                leaf.innerHTML = '<svg viewBox="0 0 16 16" fill="' + color + '" opacity="0.55">' +
+                    '<path d="M8 0C12 3 14 7 13 12c-3 1-7-1-9-5C3 4 5 1 8 0z"/>' +
+                    '<path d="M8 1L7 13" stroke="' + color + '" stroke-width="0.6" fill="none" opacity="0.7"/></svg>';
+                leavesEl.appendChild(leaf);
+            }
+        }
+    </script>
+</body>
+</html>

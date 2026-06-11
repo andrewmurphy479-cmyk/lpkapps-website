@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="Explore apps by LPK Apps — Word Puzzle, WC INKs, Optimatch, Eyepay and more.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — with more apps on the way.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -336,6 +336,8 @@
             font-size: 0.7rem;
             color: var(--text-muted);
             letter-spacing: 0.18em;
+            /* compensate the trailing letter-space so the word reads optically centered */
+            padding-left: 0.18em;
             text-transform: uppercase;
         }
 
@@ -526,6 +528,20 @@
             height: 34px;
         }
 
+        .app-icon.app-icon-img {
+            overflow: hidden;
+            border: none;
+            background: none;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+        }
+
+        .app-icon.app-icon-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+
         .app-card h3 {
             font-family: var(--font-display);
             font-weight: 700;
@@ -561,6 +577,179 @@
         .app-card[data-color="coral"] .btn-learn { color: var(--coral); }
         .app-card[data-color="teal"] .btn-learn { color: var(--teal); }
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
+
+        /* ========================
+           FLAGSHIP CARD (Root Word)
+           ======================== */
+        .app-card.flagship {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .flagship-head {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .flagship-head img {
+            width: 72px;
+            height: 72px;
+            border-radius: 17px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .app-card.flagship:hover .flagship-head img {
+            transform: scale(1.06) rotate(-2deg);
+        }
+
+        .flagship-head h3 {
+            margin-bottom: 0.2rem;
+            font-size: 1.8rem;
+        }
+
+        .flagship-tagline {
+            font-size: 0.88rem;
+            color: var(--amber);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        .app-card.flagship > div > p {
+            margin-bottom: 2rem;
+        }
+
+        .flagship-ctas {
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-flagship {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.78rem 1.7rem;
+            border-radius: 100px;
+            background: var(--amber);
+            color: #1d1304;
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 22px rgba(240, 160, 80, 0.28);
+        }
+
+        .btn-flagship:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(240, 160, 80, 0.4);
+        }
+
+        .btn-flagship .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-flagship:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .flagship-art {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .flagship-art .shot {
+            width: min(240px, 80%);
+            border-radius: 18px;
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55);
+            transform: rotate(1.6deg);
+            transition: transform 0.45s ease;
+        }
+
+        .app-card.flagship:hover .flagship-art .shot {
+            transform: rotate(0.4deg) translateY(-4px);
+        }
+
+        .flagship-art .plant {
+            position: absolute;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+            animation: plantFloat 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .flagship-art .plant-l {
+            height: 120px;
+            left: 2%;
+            bottom: -6px;
+        }
+
+        .flagship-art .plant-r {
+            height: 96px;
+            right: 4%;
+            top: -14px;
+            animation-delay: 1.6s;
+        }
+
+        @keyframes plantFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+
+        /* Ghost card for future apps */
+        .ghost-card {
+            border-style: dashed;
+            border-color: rgba(255, 255, 255, 0.1);
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 0.9rem;
+            min-height: 240px;
+        }
+
+        .ghost-card:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .ghost-card .plus {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(255, 255, 255, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        .ghost-card p {
+            margin-bottom: 0;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .status-soon {
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
 
         /* ========================
            ABOUT SECTION
@@ -715,6 +904,19 @@
                 padding: 2rem;
             }
 
+            .app-card.flagship {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
+
+            .flagship-art {
+                order: -1;
+            }
+
+            .flagship-art .plant-l { height: 90px; }
+            .flagship-art .plant-r { height: 72px; }
+
             .hero h1 {
                 font-size: clamp(1.8rem, 7vw, 2.5rem);
             }
@@ -792,72 +994,42 @@
 
             <div class="apps-grid">
 
-                <!-- Word Puzzle -->
-                <article class="app-card reveal stagger-1" data-color="amber">
-                    <span class="app-card-tag">Game</span>
-                    <div class="app-icon">
-                        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
-                            <rect x="1" y="1" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".85"/>
-                            <rect x="12.5" y="1" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".45"/>
-                            <rect x="24" y="1" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".7"/>
-                            <rect x="1" y="12.5" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".35"/>
-                            <rect x="12.5" y="12.5" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".9"/>
-                            <rect x="24" y="12.5" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".25"/>
-                            <rect x="1" y="24" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".6"/>
-                            <rect x="12.5" y="24" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".85"/>
-                            <rect x="24" y="24" width="9" height="9" rx="2.5" fill="#f0a050" opacity=".5"/>
-                        </svg>
+                <!-- Root Word — flagship -->
+                <article class="app-card flagship reveal stagger-1" data-color="amber">
+                    <div>
+                        <span class="app-card-tag">Game &middot; iOS</span>
+                        <div class="flagship-head">
+                            <img src="assets/rootword-icon.png" alt="Root Word app icon — Rooty the tree stump under wooden letter tiles">
+                            <div>
+                                <h3>Root Word</h3>
+                                <span class="flagship-tagline">Cozy word puzzles that plant real trees</span>
+                            </div>
+                        </div>
+                        <p>Word searches, word wheels and crosswords set in soft, atmospheric worlds. Grow and collect rare plants, keep your daily streak with Rooty, and watch your puzzles plant real trees in the real world.</p>
+                        <div class="flagship-ctas">
+                            <a href="rootword.html" class="btn-flagship">Explore Root Word <span class="arrow">&#8594;</span></a>
+                        </div>
                     </div>
-                    <h3>Word Puzzle</h3>
-                    <p>Challenge your vocabulary and unscramble your way to the top. A brain-teasing word game for puzzle lovers of all ages.</p>
-                    <a href="#" class="btn-learn">Learn More <span>&#8594;</span></a>
+                    <div class="flagship-art" aria-hidden="true">
+                        <img class="shot" src="assets/shots/04.jpg" alt="" loading="lazy">
+                    </div>
                 </article>
 
                 <!-- WC INKs -->
                 <article class="app-card reveal stagger-2" data-color="coral">
-                    <span class="app-card-tag">Creative</span>
-                    <div class="app-icon">
-                        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
-                            <circle cx="11" cy="15" r="8" fill="#f06080" opacity=".6"/>
-                            <circle cx="23" cy="13" r="6" fill="#f06080" opacity=".45"/>
-                            <circle cx="17" cy="24" r="6.5" fill="#f06080" opacity=".55"/>
-                            <circle cx="27" cy="24" r="3.5" fill="#f06080" opacity=".35"/>
-                            <circle cx="6" cy="7" r="3" fill="#f06080" opacity=".3"/>
-                        </svg>
+                    <span class="app-card-tag">Creative &middot; In Development</span>
+                    <div class="app-icon app-icon-img">
+                        <img src="assets/wcinks-logo.png" alt="WC INKs logo — iridescent liquid chrome lettering">
                     </div>
                     <h3>WC INKs</h3>
-                    <p>Unleash your creativity with a powerful ink and design toolkit. Express yourself with strokes, colors, and endless possibilities.</p>
-                    <a href="#" class="btn-learn">Learn More <span>&#8594;</span></a>
+                    <p>Premium inks and a creator community for cup makers — shop drops, blend recipes, technique guides, and a showcase for the pours that deserve an audience.</p>
+                    <a href="wcinks.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
                 </article>
 
-                <!-- Optimatch -->
-                <article class="app-card reveal stagger-3" data-color="teal">
-                    <span class="app-card-tag">Utility</span>
-                    <div class="app-icon">
-                        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
-                            <circle cx="13" cy="17" r="10" stroke="#40c8b8" stroke-width="2.2" fill="none" opacity=".75"/>
-                            <circle cx="21" cy="17" r="10" stroke="#40c8b8" stroke-width="2.2" fill="none" opacity=".75"/>
-                            <path d="M17 9.5q2.5 3.5 0 15" fill="#40c8b8" opacity=".18"/>
-                        </svg>
-                    </div>
-                    <h3>Optimatch</h3>
-                    <p>Find your perfect match — fast. A smart matching engine that connects the right dots with speed and precision.</p>
-                    <a href="#" class="btn-learn">Learn More <span>&#8594;</span></a>
-                </article>
-
-                <!-- Eyepay -->
-                <article class="app-card reveal stagger-4" data-color="violet">
-                    <span class="app-card-tag">Finance</span>
-                    <div class="app-icon">
-                        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
-                            <ellipse cx="17" cy="17" rx="14" ry="8.5" stroke="#7878ff" stroke-width="2.2" fill="none" opacity=".65"/>
-                            <circle cx="17" cy="17" r="4.5" fill="#7878ff" opacity=".5"/>
-                            <circle cx="17" cy="17" r="2" fill="#7878ff" opacity=".85"/>
-                        </svg>
-                    </div>
-                    <h3>Eyepay</h3>
-                    <p>See your spending clearly. A modern payment and finance companion that keeps your money in focus.</p>
-                    <a href="#" class="btn-learn">Learn More <span>&#8594;</span></a>
+                <!-- Future apps -->
+                <article class="app-card ghost-card reveal stagger-3" data-color="teal" aria-label="More apps in the works">
+                    <div class="plus" aria-hidden="true">+</div>
+                    <p>More in the works.<br>The next idea is already sprouting.</p>
                 </article>
 
             </div>
@@ -870,8 +1042,8 @@
                 <h2 class="section-title">Who we are</h2>
             </div>
             <div class="about-content reveal">
-                <p>We're LPK Apps — a small team with a big love for building useful, beautiful software.</p>
-                <p>From word games to creative tools, from smart matching to financial clarity — every app we make is designed to solve a real problem while feeling delightful to use. We believe great software should be accessible, intuitive, and a little bit fun.</p>
+                <p>We're LPK Apps — a small independent studio with a big love for building useful, beautiful software.</p>
+                <p>From cozy word games to creative tools, every app we make is designed around a simple idea: software should solve a real problem while feeling delightful to use. We sweat the details, ship with care, and always leave room for a little bit of fun.</p>
                 <div class="about-divider" aria-hidden="true">
                     <div class="pip"></div>
                     <div class="pip"></div>
