@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blob Tennis — Physics-Based Tennis. In Development.</title>
+    <meta name="description" content="Blob Tennis by LPK Apps — a physics-based tennis game with a cast of blob rivals. Flick to swing, spin like you mean it, and climb the tour. In development.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23EDF2E4'/%3E%3Ccircle cx='32' cy='34' r='20' fill='%23D6EB4F'/%3E%3Cpath d='M12 26 Q32 40 52 26' stroke='%23F4FBCB' stroke-width='3.5' fill='none'/%3E%3Ccircle cx='26' cy='36' r='2.6' fill='%2324382C'/%3E%3Ccircle cx='38' cy='36' r='2.6' fill='%2324382C'/%3E%3C/svg%3E" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* lifted straight from the game's splash + HUD */
+            --bg: #EDF2E4;
+            --bg-soft: #F5F8EE;
+            --ink: #24382C;
+            --ink-soft: #5C7261;
+            --ball: #D6EB4F;
+            --ball-shade: #B8CE33;
+            --seam: #F4FBCB;
+            --line: #C9D6BB;
+            --gold: #ffd24a;
+            --gold-ink: #241a04;
+            --card: #F7FAF0;
+            --border: #DCE5CE;
+
+            --display: 'Fredoka', sans-serif;
+            --body: 'DM Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--ball);
+            color: var(--ink);
+        }
+
+        img { display: block; max-width: 100%; }
+
+        /* ========================
+           NAV
+           ======================== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.85rem 1.75rem;
+            background: rgba(237, 242, 228, 0.82);
+            backdrop-filter: blur(16px) saturate(1.1);
+            -webkit-backdrop-filter: blur(16px) saturate(1.1);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            text-decoration: none;
+            transition: color 0.25s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover { color: var(--ink); }
+        .nav-back .arr { transition: transform 0.25s; }
+        .nav-back:hover .arr { transform: translateX(-3px); }
+
+        .nav-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .nav-brand svg {
+            width: 34px;
+            height: 34px;
+        }
+
+        .nav-brand span {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.08rem;
+            letter-spacing: 0.03em;
+            color: var(--ink);
+        }
+
+        .nav-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #6a7c2a;
+            background: rgba(214, 235, 79, 0.3);
+            border: 1px solid rgba(184, 206, 51, 0.55);
+            padding: 0.45rem 1rem;
+            border-radius: 100px;
+            white-space: nowrap;
+        }
+
+        /* ========================
+           HERO — the splash screen, ported
+           ======================== */
+        .hero {
+            position: relative;
+            z-index: 2;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            padding: clamp(6rem, 14vh, 9rem) 1.5rem 6.5rem;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .hero-title .word { display: flex; }
+
+        .hero-title .letter {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: clamp(3rem, 11vw, 5.2rem);
+            line-height: 1.05;
+            letter-spacing: 0.02em;
+            color: var(--ink);
+            opacity: 0;
+            transform: translateY(26px) scale(0.6);
+            animation: letterPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes letterPop {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .hero-tagline {
+            margin-top: 1.2rem;
+            font-size: clamp(0.72rem, 1.8vw, 0.85rem);
+            font-weight: 500;
+            letter-spacing: 0.42em;
+            padding-left: 0.42em; /* optical centering vs trailing letter-space */
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            opacity: 0;
+            animation: heroRise 0.7s ease forwards 2.5s;
+        }
+
+        .hero-sub {
+            max-width: 520px;
+            margin-top: 1.6rem;
+            color: var(--ink-soft);
+            font-size: clamp(1rem, 2.2vw, 1.15rem);
+            font-weight: 400;
+            opacity: 0;
+            animation: heroRise 0.7s ease forwards 2.65s;
+        }
+
+        .hero-sub strong { color: var(--ink); font-weight: 600; }
+
+        /* --- the bounce stage --- */
+        .stage {
+            position: relative;
+            width: min(560px, 88vw);
+            height: clamp(180px, 26vh, 240px);
+            margin-top: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .stage .court {
+            position: absolute;
+            left: 4%;
+            right: 4%;
+            bottom: 28px;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--line);
+        }
+
+        .stage .center-mark {
+            position: absolute;
+            left: 50%;
+            top: -6px;
+            width: 2px;
+            height: 6px;
+            background: var(--line);
+        }
+
+        .stage .shadow {
+            position: absolute;
+            left: 50%;
+            bottom: 22px;
+            width: 88px;
+            height: 14px;
+            margin-left: -44px;
+            border-radius: 50%;
+            background: var(--ink);
+            animation: shadowTrack 2.5s forwards;
+        }
+
+        .ball-drop {
+            position: absolute;
+            left: 50%;
+            bottom: 27px;
+            width: 88px;
+            height: 88px;
+            margin-left: -44px;
+            animation: ballBounce 2.5s forwards;
+        }
+
+        .blob {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: var(--ball);
+            overflow: hidden;
+            border-radius: 46% 54% 52% 48%;
+            transform-origin: 50% 100%;
+            animation: ballSquash 2.5s forwards,
+                       idleWobble 3.6s ease-in-out 2.6s infinite;
+        }
+
+        .blob .highlight {
+            position: absolute;
+            top: 12%;
+            left: 16%;
+            width: 42%;
+            height: 34%;
+            border-radius: 50%;
+            background: var(--seam);
+            opacity: 0.55;
+        }
+
+        .blob .seam {
+            position: absolute;
+            top: -30%;
+            left: -52%;
+            width: 130%;
+            height: 130%;
+            border-radius: 50%;
+            border: 4px solid var(--seam);
+            opacity: 0.85;
+        }
+
+        .blob .face {
+            position: absolute;
+            top: 38%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            opacity: 0;
+            animation: faceIn 0.4s ease forwards 2.4s;
+        }
+
+        .blob .eye {
+            width: 8px;
+            height: 10px;
+            border-radius: 6px;
+            background: var(--ink);
+            animation: blink 4s infinite 3s;
+        }
+
+        /* Bounce — impacts at 30% / 60% / 82% / 100% of 2.5s (same beats as the app) */
+        @keyframes ballBounce {
+            0%   { transform: translateY(-72vh); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6); }
+            30%  { transform: translateY(0);      animation-timing-function: cubic-bezier(0, 0.4, 0.5, 1); }
+            46%  { transform: translateY(-21vh);  animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6); }
+            60%  { transform: translateY(0);      animation-timing-function: cubic-bezier(0, 0.4, 0.5, 1); }
+            72%  { transform: translateY(-8.5vh); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6); }
+            82%  { transform: translateY(0);      animation-timing-function: cubic-bezier(0, 0.4, 0.5, 1); }
+            89%  { transform: translateY(-2.8vh); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes ballSquash {
+            0%   { transform: scale(0.94, 1.1); }
+            28%  { transform: scale(0.94, 1.1); }
+            30%  { transform: scale(1.3, 0.62); }
+            36%  { transform: scale(0.95, 1.08); }
+            50%  { transform: scale(1, 1); }
+            58%  { transform: scale(1, 1); }
+            60%  { transform: scale(1.2, 0.74); }
+            66%  { transform: scale(0.97, 1.05); }
+            80%  { transform: scale(1, 1); }
+            82%  { transform: scale(1.12, 0.85); }
+            90%  { transform: scale(1.02, 0.98); }
+            95%  { transform: scale(1.05, 0.94); }
+            100% { transform: scale(1, 1); }
+        }
+
+        @keyframes idleWobble {
+            0%, 100% { border-radius: 46% 54% 52% 48%; }
+            33%      { border-radius: 52% 48% 46% 54%; }
+            66%      { border-radius: 48% 52% 54% 46%; }
+        }
+
+        @keyframes shadowTrack {
+            0%   { opacity: 0.02; transform: scaleX(0.4); }
+            30%  { opacity: 0.13; transform: scaleX(1.15); }
+            46%  { opacity: 0.06; transform: scaleX(0.62); }
+            60%  { opacity: 0.13; transform: scaleX(1.15); }
+            72%  { opacity: 0.09; transform: scaleX(0.8); }
+            82%  { opacity: 0.13; transform: scaleX(1.12); }
+            100% { opacity: 0.13; transform: scaleX(1.15); }
+        }
+
+        @keyframes faceIn { to { opacity: 1; } }
+
+        @keyframes blink {
+            0%, 91%, 100% { transform: scaleY(1); }
+            93%           { transform: scaleY(0.08); }
+            96%           { transform: scaleY(1); }
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.1rem;
+            flex-wrap: wrap;
+            margin-top: 1.8rem;
+            opacity: 0;
+            animation: heroRise 0.7s ease forwards 2.85s;
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.95rem 2.1rem;
+            border-radius: 100px;
+            background: var(--gold);
+            color: var(--gold-ink);
+            font-family: var(--body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            box-shadow: 0 8px 26px rgba(184, 206, 51, 0.45);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 36px rgba(184, 206, 51, 0.6);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.95rem 1.9rem;
+            border-radius: 100px;
+            border: 1.5px solid var(--line);
+            background: rgba(247, 250, 240, 0.7);
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--ink);
+            border-color: var(--ink-soft);
+            transform: translateY(-2px);
+        }
+
+        @keyframes heroRise {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 1.1rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.55rem;
+            opacity: 0;
+            animation: heroRise 0.9s ease forwards 3.4s;
+        }
+
+        .scroll-hint span {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            letter-spacing: 0.2em;
+            padding-left: 0.2em; /* optical centering vs trailing letter-space */
+            text-transform: uppercase;
+        }
+
+        .scroll-hint .line {
+            width: 1.5px;
+            height: 34px;
+            border-radius: 1px;
+            background: linear-gradient(to bottom, var(--ink-soft), transparent);
+            animation: hintPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.3; transform: scaleY(0.5); }
+        }
+
+        /* ========================
+           SHARED
+           ======================== */
+        .section {
+            position: relative;
+            z-index: 2;
+            padding: 5.5rem 1.5rem;
+        }
+
+        .wrap { max-width: 1080px; margin: 0 auto; }
+
+        .sec-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.26em;
+            text-transform: uppercase;
+            color: #8a9e3a;
+            margin-bottom: 1rem;
+        }
+
+        .sec-title {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+            line-height: 1.12;
+            letter-spacing: 0.005em;
+            color: var(--ink);
+        }
+
+        .sec-copy {
+            color: var(--ink-soft);
+            max-width: 560px;
+            margin-top: 1.1rem;
+        }
+
+        /* court-baseline divider between acts */
+        .baseline {
+            position: relative;
+            max-width: 1080px;
+            margin: 0 auto;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--line);
+        }
+
+        .baseline::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -6px;
+            width: 2px;
+            height: 6px;
+            background: var(--line);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .d1 { transition-delay: 0.08s; }
+        .d2 { transition-delay: 0.16s; }
+        .d3 { transition-delay: 0.24s; }
+        .d4 { transition-delay: 0.32s; }
+
+        /* ========================
+           FEATURES
+           ======================== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.4rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 2.2rem 2rem;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s, border-color 0.35s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--line);
+            box-shadow: 0 20px 44px rgba(36, 56, 44, 0.12);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: rgba(214, 235, 79, 0.28);
+            border: 1px solid rgba(184, 206, 51, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.35rem;
+        }
+
+        .feature-icon svg { width: 26px; height: 26px; }
+
+        .feature-card h3 {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-card p {
+            color: var(--ink-soft);
+            font-size: 0.93rem;
+        }
+
+        .feature-card .tag {
+            display: inline-block;
+            margin-top: 1.2rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #6a7c2a;
+            background: rgba(214, 235, 79, 0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+        }
+
+        /* ========================
+           RIVALS — the scouting bench
+           ======================== */
+        .rivals-section { padding-bottom: 6rem; }
+
+        .rival-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2.6rem;
+            overflow-x: auto;
+            padding: 0.75rem 0.25rem 1.75rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+        }
+
+        .rival-row::-webkit-scrollbar { height: 8px; }
+        .rival-row::-webkit-scrollbar-track { background: transparent; }
+        .rival-row::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 100px;
+        }
+
+        .rival-card {
+            scroll-snap-align: start;
+            flex: 0 0 218px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem 1.3rem 1.4rem;
+            text-align: center;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .rival-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 38px rgba(36, 56, 44, 0.14);
+        }
+
+        /* a rival is a blob with an identity: body tint + visor */
+        .rblob {
+            position: relative;
+            width: 86px;
+            height: 86px;
+            margin: 0 auto 1.1rem;
+            background: var(--b);
+            border-radius: 46% 54% 52% 48%;
+            box-shadow:
+                inset 0 -10px 18px rgba(36, 56, 44, 0.14),
+                inset 0 8px 14px rgba(255, 255, 255, 0.35);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .rival-card:hover .rblob {
+            transform: scale(1.08) rotate(-3deg);
+            animation: idleWobble 2.4s ease-in-out infinite;
+        }
+
+        .rblob .visor {
+            position: absolute;
+            top: 17%;
+            left: 14%;
+            right: 14%;
+            height: 15px;
+            border-radius: 100px;
+            background: var(--v);
+        }
+
+        .rblob .eyes {
+            position: absolute;
+            top: 46%;
+            left: 50%;
+            width: 7px;
+            height: 9px;
+            margin-left: -11px;
+            border-radius: 5px;
+            background: var(--ink);
+            box-shadow: 15px 0 0 var(--ink);
+        }
+
+        .rival-card h4 {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.01em;
+        }
+
+        .rival-card .epithet {
+            display: block;
+            margin-top: 0.15rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #8a9e3a;
+        }
+
+        .rival-card .scout {
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            color: var(--ink-soft);
+        }
+
+        /* ========================
+           VENUES
+           ======================== */
+        .venue-band {
+            background: linear-gradient(180deg, var(--bg) 0%, #E4EBD6 50%, var(--bg) 100%);
+        }
+
+        .venue-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.4rem;
+            margin-top: 3rem;
+        }
+
+        .venue-card {
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--card);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 44px rgba(36, 56, 44, 0.14);
+        }
+
+        .venue-sky {
+            position: relative;
+            height: 128px;
+            background: var(--sky);
+            overflow: hidden;
+        }
+
+        /* the court strip at the bottom of each postcard */
+        .venue-sky::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            height: 34px;
+            background: var(--surf);
+            border-top: 3px solid rgba(255, 255, 255, 0.75);
+        }
+
+        /* sun / moon */
+        .venue-sky .orb {
+            position: absolute;
+            top: 22px;
+            right: 26px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--orb);
+            box-shadow: 0 0 24px 6px var(--orb-glow);
+        }
+
+        .venue-body { padding: 1.5rem 1.5rem 1.6rem; }
+
+        .venue-body h4 {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 1.12rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .venue-body p {
+            color: var(--ink-soft);
+            font-size: 0.88rem;
+        }
+
+        .venue-body .chip {
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 0.66rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            border: 1px solid var(--line);
+            padding: 0.28rem 0.75rem;
+            border-radius: 100px;
+        }
+
+        /* ========================
+           CTA
+           ======================== */
+        .cta-section {
+            text-align: center;
+            padding: 6.5rem 1.5rem 7rem;
+        }
+
+        .cta-blob {
+            position: relative;
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 1.9rem;
+            background: var(--ball);
+            border-radius: 46% 54% 52% 48%;
+            box-shadow:
+                inset 0 -10px 18px rgba(36, 56, 44, 0.12),
+                inset 0 8px 14px rgba(255, 255, 255, 0.4),
+                0 14px 30px rgba(184, 206, 51, 0.35);
+            animation: idleWobble 3.6s ease-in-out infinite;
+        }
+
+        .cta-blob .eyes {
+            position: absolute;
+            top: 44%;
+            left: 50%;
+            width: 7px;
+            height: 9px;
+            margin-left: -11px;
+            border-radius: 5px;
+            background: var(--ink);
+            box-shadow: 15px 0 0 var(--ink);
+            animation: blink 4s infinite 1s;
+        }
+
+        .cta-section .sec-copy {
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.4rem;
+        }
+
+        .cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        /* ========================
+           FOOTER
+           ======================== */
+        footer {
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid var(--border);
+            padding: 3rem 1.5rem;
+        }
+
+        .footer-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            font-family: var(--display);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.75rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-size: 0.86rem;
+            color: var(--ink-soft);
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .footer-links a:hover { color: var(--ink); }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+        }
+
+        /* ========================
+           RESPONSIVE
+           ======================== */
+        @media (max-width: 820px) {
+            .features-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
+            .venue-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+        }
+
+        @media (max-width: 700px) {
+            nav { padding: 0.75rem 1rem; }
+            .nav-brand span { display: none; }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .stage { height: 160px; }
+            .ball-drop, .stage .shadow { transform-origin: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .hero-title .letter, .hero-tagline, .hero-sub, .hero-actions, .scroll-hint { opacity: 1; transform: none; }
+            .blob .face { opacity: 1; }
+            .stage .shadow { opacity: 0.13; }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="nav-back"><span class="arr">&#8592;</span> LPK Apps</a>
+        <a href="#" class="nav-brand">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="32" cy="32" r="26" fill="#D6EB4F"/>
+                <path d="M6 22 Q32 40 58 22" stroke="#F4FBCB" stroke-width="4" fill="none"/>
+                <circle cx="25" cy="34" r="3" fill="#24382C"/>
+                <circle cx="39" cy="34" r="3" fill="#24382C"/>
+            </svg>
+            <span>Blob Tennis</span>
+        </a>
+        <span class="nav-status">In Development</span>
+    </nav>
+
+    <main>
+        <!-- ====== HERO — the game's splash screen, recreated ====== -->
+        <header class="hero">
+            <div class="hero-title" aria-label="Blob Tennis">
+                <div class="word" aria-hidden="true">
+                    <span class="letter" style="animation-delay:0.78s">B</span>
+                    <span class="letter" style="animation-delay:0.84s">L</span>
+                    <span class="letter" style="animation-delay:0.90s">O</span>
+                    <span class="letter" style="animation-delay:0.96s">B</span>
+                </div>
+                <div class="word" aria-hidden="true">
+                    <span class="letter" style="animation-delay:1.50s">T</span>
+                    <span class="letter" style="animation-delay:1.55s">E</span>
+                    <span class="letter" style="animation-delay:1.60s">N</span>
+                    <span class="letter" style="animation-delay:1.65s">N</span>
+                    <span class="letter" style="animation-delay:1.70s">I</span>
+                    <span class="letter" style="animation-delay:1.75s">S</span>
+                </div>
+            </div>
+            <p class="hero-tagline">Physics-Based Tennis</p>
+
+            <!-- Bounce stage — same beats as the app's splash -->
+            <div class="stage" aria-hidden="true">
+                <div class="court"><div class="center-mark"></div></div>
+                <div class="shadow"></div>
+                <div class="ball-drop">
+                    <div class="blob">
+                        <div class="highlight"></div>
+                        <div class="seam"></div>
+                        <div class="face">
+                            <div class="eye"></div>
+                            <div class="eye"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="hero-sub">A real sport in a squishy body. Flick to swing, spin like you mean it, and out-think a tour of blob rivals — <strong>every shot obeys real ball physics.</strong></p>
+            <div class="hero-actions">
+                <a href="mailto:hello@lpkapps.com?subject=Notify%20me%20about%20Blob%20Tennis" class="btn-gold">Get notified at launch</a>
+                <a href="#game" class="btn-ghost">See what's coming &#8595;</a>
+            </div>
+            <div class="scroll-hint" aria-hidden="true">
+                <span>Scroll</span>
+                <div class="line"></div>
+            </div>
+        </header>
+
+        <!-- ====== THE GAME ====== -->
+        <section class="section" id="game">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">The Game</span>
+                    <h2 class="sec-title">Cute on the outside.<br>Tennis to the bone.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">No power-up buttons, no energy meters. Just the sport — served by blobs.</p>
+                </div>
+
+                <div class="features-grid">
+                    <article class="feature-card reveal d1">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <path d="M4 21 Q9 17 12 12 T21 4" stroke="#6a7c2a" stroke-width="1.8" stroke-linecap="round" fill="none" stroke-dasharray="1 3.2"/>
+                                <circle cx="21" cy="4.5" r="3" fill="#D6EB4F" stroke="#6a7c2a" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <h3>Honest physics</h3>
+                        <p>Topspin dips, slice skids, kick serves jump. Every bounce comes out of a real simulation — so winners are earned, never gifted.</p>
+                        <span class="tag">The whole point</span>
+                    </article>
+
+                    <article class="feature-card reveal d2">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <path d="M6 20 L15 6" stroke="#6a7c2a" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M12 5 L16 5 L16 9" stroke="#6a7c2a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <circle cx="7.5" cy="20" r="2.6" fill="rgba(214,235,79,0.6)" stroke="#6a7c2a" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <h3>One input language</h3>
+                        <p>Flick to swing, tap for a drop shot, hold for the lob. The whole shot palette lives in your thumb — no buttons, ever.</p>
+                        <span class="tag">Easy to learn</span>
+                    </article>
+
+                    <article class="feature-card reveal d3">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <path d="M13 4l2.4 5 5.6.7-4.1 3.8 1.1 5.5L13 16.2 8 19l1.1-5.5L5 9.7l5.6-.7L13 4z" stroke="#6a7c2a" stroke-width="1.6" stroke-linejoin="round" fill="rgba(214,235,79,0.5)"/>
+                            </svg>
+                        </div>
+                        <h3>A tour of rivals</h3>
+                        <p>Climb the career ladder against named rivals, each with a game plan and a weakness worth scouting. Beat the Legend, wear her shades.</p>
+                        <span class="tag">Career mode</span>
+                    </article>
+
+                    <article class="feature-card reveal d4">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <rect x="5" y="9" width="16" height="12" rx="2.5" stroke="#6a7c2a" stroke-width="1.7" fill="rgba(214,235,79,0.4)"/>
+                                <path d="M9 9V7a4 4 0 018 0v2" stroke="#6a7c2a" stroke-width="1.7" fill="none"/>
+                                <circle cx="13" cy="15" r="2" fill="#6a7c2a"/>
+                            </svg>
+                        </div>
+                        <h3>Earn everything</h3>
+                        <p>Outfits, rackets, ball trails, victory confetti — a locker full of cosmetics unlocked by playing. Zero pay-to-win, forever.</p>
+                        <span class="tag">No paywalls</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <div class="baseline" aria-hidden="true"></div>
+
+        <!-- ====== RIVALS ====== -->
+        <section class="section rivals-section">
+            <div class="wrap">
+                <div class="reveal">
+                    <span class="sec-label">Scouting Reports</span>
+                    <h2 class="sec-title">Know your enemy.</h2>
+                    <p class="sec-copy">Nine rivals stand between you and the title. Every one has a plan — and every plan has a hole. Straight from the in-game scouting cards.</p>
+                </div>
+
+                <div class="rival-row reveal d1">
+                    <article class="rival-card" style="--b:#b8cca0; --v:#5a7a3a">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Mo</h4>
+                        <span class="epithet">The Moonballer</span>
+                        <p class="scout">Floats everything to the moon. Step in and take it early — or just smash.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#e8cfa0; --v:#d87a28">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Bea</h4>
+                        <span class="epithet">The Backboard</span>
+                        <p class="scout">Runs down everything, hurts nothing. Pull her in with drops — she lives on the baseline.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#d8a8a0; --v:#7a2424">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Cal</h4>
+                        <span class="epithet">The Cannon</span>
+                        <p class="scout">First serve like a freight train, second serve like a gift. Block the first, feast on the second.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#a8c4d8; --v:#2a6a8a">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Dash</h4>
+                        <span class="epithet">The Retriever</span>
+                        <p class="scout">Fastest feet in the city, slices that stay shin-high. Stretch him corner to corner.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#ccc0e4; --v:#7a4aa8">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Skye</h4>
+                        <span class="epithet">The Lob Queen</span>
+                        <p class="scout">The instant you lean toward the net, the lob is already up. Keep your overhead loaded.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#e4ddb8; --v:#2a8a4a">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Rush</h4>
+                        <span class="epithet">The Volley</span>
+                        <p class="scout">Serves, charges, volleys — every point at your throat. Dip the pass low or throw the lob.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#b4d0c0; --v:#1a5a3a">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Ivy</h4>
+                        <span class="epithet">The Wall</span>
+                        <p class="scout">She does not miss. Every point must be ended twice — take the net and finish it yourself.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#d8bc90; --v:#b8861a">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Boom</h4>
+                        <span class="epithet">The Ace Machine</span>
+                        <p class="scout">Biggest serve on tour and a hammer behind it. The second serve is your window.</p>
+                    </article>
+                    <article class="rival-card" style="--b:#e6e6ee; --v:#20202e">
+                        <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
+                        <h4>Nova</h4>
+                        <span class="epithet">The Legend</span>
+                        <p class="scout">No weakness but one. Everything you have learned, all at once.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== VENUES ====== -->
+        <section class="section venue-band">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center">
+                    <span class="sec-label">The Tour</span>
+                    <h2 class="sec-title">Three stages. Three surfaces.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">Clay slows the ball and rewards spin, grass keeps it low and mean, hard court plays it straight. The venue changes how the sport feels — not just how it looks.</p>
+                </div>
+
+                <div class="venue-grid">
+                    <article class="venue-card reveal d1">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #bfe0f2, #dceec9); --surf: #c8724c; --orb: #ffe9a8; --orb-glow: rgba(255, 233, 168, 0.7)" aria-hidden="true">
+                            <div class="orb"></div>
+                        </div>
+                        <div class="venue-body">
+                            <h4>The Garden Club</h4>
+                            <p>Hedges, parasols and a polite crowd on the benches. Where the tour begins — and where the coach teaches you the game.</p>
+                            <span class="chip">Clay &middot; Grass</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d2">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #10182c, #232f52); --surf: #3d5a43; --orb: #e8ecf4; --orb-glow: rgba(232, 236, 244, 0.5)" aria-hidden="true">
+                            <div class="orb"></div>
+                        </div>
+                        <div class="venue-body">
+                            <h4>The Night Show Court</h4>
+                            <p>Five rows deep under the floodlights, stars overhead. The semifinal stage, where the crowd starts to mean it.</p>
+                            <span class="chip">Under the lights</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d3">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #f7c86e, #e8875a 55%, #8a4a6e); --surf: #4a7ab0; --orb: #fff3c4; --orb-glow: rgba(255, 243, 196, 0.8)" aria-hidden="true">
+                            <div class="orb"></div>
+                        </div>
+                        <div class="venue-body">
+                            <h4>Sunset Center Court</h4>
+                            <p>The LED scoreboard, the roaring stands, the golden hour. Only one match is played here — the final against the Legend.</p>
+                            <span class="chip">Hard court</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== CTA ====== -->
+        <section class="cta-section">
+            <div class="cta-blob" aria-hidden="true"><span class="eyes"></span></div>
+            <h2 class="sec-title reveal">First serve is coming.</h2>
+            <p class="sec-copy reveal d1">Blob Tennis is in active development. Want to be courtside on day one? Get on the list and we'll call the match the moment it drops.</p>
+            <div class="cta-actions reveal d2">
+                <a href="mailto:hello@lpkapps.com?subject=Notify%20me%20about%20Blob%20Tennis" class="btn-gold">Get notified at launch</a>
+                <a href="rootword.html" class="btn-ghost">Meanwhile, try Root Word &#8594;</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <span class="footer-brand">Blob Tennis</span>
+            <ul class="footer-links">
+                <li><a href="index.html">LPK Apps</a></li>
+                <li><a href="rootword.html">Root Word</a></li>
+                <li><a href="wcinks.html">WC INKs</a></li>
+                <li><a href="mailto:hello@lpkapps.com">Contact</a></li>
+            </ul>
+            <span class="footer-copy">&copy; 2026 LPK Apps. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12 }
+        );
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>

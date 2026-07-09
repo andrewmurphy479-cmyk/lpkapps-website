@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — with more apps on the way.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — plus Blob Tennis and WC INKs on the way.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,8 @@
             --teal-soft: rgba(64, 200, 184, 0.12);
             --violet: #7878ff;
             --violet-soft: rgba(120, 120, 255, 0.12);
+            --lime: #d6eb4f;
+            --lime-soft: rgba(214, 235, 79, 0.12);
 
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -436,6 +438,9 @@
         .app-card[data-color="violet"]::before {
             background: radial-gradient(ellipse at 20% 20%, var(--violet-soft), transparent 65%);
         }
+        .app-card[data-color="lime"]::before {
+            background: radial-gradient(ellipse at 20% 20%, var(--lime-soft), transparent 65%);
+        }
 
         .app-card:hover {
             transform: translateY(-6px);
@@ -457,6 +462,10 @@
         .app-card[data-color="violet"]:hover {
             box-shadow: 0 20px 60px -15px rgba(120, 120, 255, 0.15),
                         0 0 0 1px rgba(120, 120, 255, 0.08);
+        }
+        .app-card[data-color="lime"]:hover {
+            box-shadow: 0 20px 60px -15px rgba(214, 235, 79, 0.15),
+                        0 0 0 1px rgba(214, 235, 79, 0.08);
         }
 
         .app-card:hover::before {
@@ -490,6 +499,10 @@
             color: var(--violet);
             background: var(--violet-soft);
         }
+        .app-card[data-color="lime"] .app-card-tag {
+            color: var(--lime);
+            background: var(--lime-soft);
+        }
 
         .app-icon {
             width: 68px;
@@ -521,6 +534,10 @@
         .app-card[data-color="violet"] .app-icon {
             background: linear-gradient(135deg, rgba(120, 120, 255, 0.18), rgba(120, 120, 255, 0.06));
             border: 1px solid rgba(120, 120, 255, 0.2);
+        }
+        .app-card[data-color="lime"] .app-icon {
+            background: linear-gradient(135deg, rgba(214, 235, 79, 0.18), rgba(214, 235, 79, 0.06));
+            border: 1px solid rgba(214, 235, 79, 0.2);
         }
 
         .app-icon svg {
@@ -577,6 +594,7 @@
         .app-card[data-color="coral"] .btn-learn { color: var(--coral); }
         .app-card[data-color="teal"] .btn-learn { color: var(--teal); }
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
+        .app-card[data-color="lime"] .btn-learn { color: var(--lime); }
 
         /* ========================
            FLAGSHIP CARD (Root Word)
@@ -1026,8 +1044,24 @@
                     <a href="wcinks.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
                 </article>
 
+                <!-- Blob Tennis -->
+                <article class="app-card reveal stagger-3" data-color="lime">
+                    <span class="app-card-tag">Game &middot; In Development</span>
+                    <div class="app-icon" aria-hidden="true">
+                        <svg viewBox="0 0 64 64" fill="none">
+                            <circle cx="32" cy="32" r="26" fill="#D6EB4F"/>
+                            <path d="M6 22 Q32 40 58 22" stroke="#F4FBCB" stroke-width="4" fill="none"/>
+                            <circle cx="25" cy="34" r="3" fill="#24382C"/>
+                            <circle cx="39" cy="34" r="3" fill="#24382C"/>
+                        </svg>
+                    </div>
+                    <h3>Blob Tennis</h3>
+                    <p>A real sport in a squishy body — flick to swing, spin like you mean it, and out-think a tour of blob rivals. Every shot obeys real ball physics.</p>
+                    <a href="blobtennis.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
+                </article>
+
                 <!-- Future apps -->
-                <article class="app-card ghost-card reveal stagger-3" data-color="teal" aria-label="More apps in the works">
+                <article class="app-card ghost-card reveal stagger-4" data-color="teal" aria-label="More apps in the works">
                     <div class="plus" aria-hidden="true">+</div>
                     <p>More in the works.<br>The next idea is already sprouting.</p>
                 </article>
