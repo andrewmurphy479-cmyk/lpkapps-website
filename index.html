@@ -782,370 +782,59 @@
         }
 
         /* ========================
-           TESTERS
+           TESTERS BAND
+           The beta program lives on beta.html; this is just the invitation.
            ======================== */
-        .testers-section {
-            padding: 2rem 2rem 8rem;
+        .testers-band {
+            padding: 0 2rem 8rem;
             max-width: 1100px;
             margin: 0 auto;
         }
 
-        /* Form and FAQ read better at prose width than full grid width */
-        .testers-narrow {
-            max-width: 760px;
-            margin: 0 auto;
+        .band-card {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid rgba(240, 160, 80, 0.18);
+            border-radius: var(--radius-lg);
+            padding: 3.5rem 2.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
-        .testers-sub {
-            margin: 1.1rem auto 0;
-            max-width: 560px;
+        .band-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(ellipse at 50% 0%, var(--amber-soft), transparent 65%);
+            pointer-events: none;
+        }
+
+        /* lift the content above the glow layer */
+        .band-card > * { position: relative; }
+
+        .band-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+
+        .band-sub {
+            margin: 1rem auto 2rem;
+            max-width: 520px;
             color: var(--text-secondary);
             font-size: 0.98rem;
         }
 
-        .subsection-title {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.35rem;
-            letter-spacing: -0.02em;
-            text-align: center;
-            margin: 5rem 0 2rem;
-        }
-
-        /* --- steps --- */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.25rem;
-        }
-
-        .step-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: border-color 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .step-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(240, 160, 80, 0.22);
-        }
-
-        /* the 5th step spans both columns to close the grid cleanly */
-        .step-card:last-child { grid-column: 1 / -1; }
-
-        .step-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            background: var(--amber-soft);
-            border: 1px solid rgba(240, 160, 80, 0.22);
-            color: var(--amber);
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 1.1rem;
-        }
-
-        .step-card h3 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.15rem;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.6rem;
-        }
-
-        .step-card p {
-            font-size: 0.92rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
-
-        /* --- signup form --- */
-        .form-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .field {
-            margin-bottom: 2rem;
-            border: 0;
-            padding: 0;
-            min-width: 0; /* fieldset defaults to min-content otherwise */
-        }
-
-        .field-label {
-            display: block;
-            font-family: var(--font-display);
-            font-size: 0.92rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.35rem;
-            padding: 0;
-        }
-
-        .field-optional {
-            font-weight: 400;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-left: 0.4rem;
-        }
-
-        .field-hint {
-            font-size: 0.83rem;
-            line-height: 1.5;
-            color: var(--text-secondary);
-            margin-bottom: 0.9rem;
-        }
-
-        .form-card input[type="email"],
-        .form-card textarea {
-            width: 100%;
-            padding: 0.85rem 1.1rem;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-        }
-
-        .form-card input::placeholder,
-        .form-card textarea::placeholder { color: var(--text-muted); }
-
-        .form-card input[type="email"]:focus-visible,
-        .form-card textarea:focus-visible {
-            outline: none;
-            border-color: var(--amber);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 3px var(--amber-soft);
-        }
-
-        .form-card textarea {
-            resize: vertical;
-            min-height: 84px;
-        }
-
-        /* Chrome paints autofilled fields pale-yellow with near-black text,
-           which is unreadable on this background. Override both. */
-        .form-card input:-webkit-autofill,
-        .form-card input:-webkit-autofill:hover,
-        .form-card input:-webkit-autofill:focus {
-            -webkit-text-fill-color: var(--text-primary);
-            caret-color: var(--text-primary);
-            box-shadow: inset 0 0 0 1000px var(--bg-surface);
-            transition: background-color 9999s ease-in-out 0s;
-        }
-
-        .check-grid { display: grid; gap: 0.65rem; }
-
-        .check-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.9rem;
-            padding: 0.95rem 1.1rem;
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.02);
-            cursor: pointer;
-            transition: border-color 0.25s, background 0.25s;
-        }
-
-        .check-row:hover { border-color: rgba(240, 160, 80, 0.3); }
-
-        .check-row:has(input:checked) {
-            border-color: rgba(240, 160, 80, 0.45);
-            background: var(--amber-soft);
-        }
-
-        .check-row input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            flex: 0 0 22px;
-            width: 22px;
-            height: 22px;
-            margin: 2px 0 0;
-            border: 1.5px solid rgba(255, 255, 255, 0.18);
-            border-radius: 7px;
-            background: rgba(255, 255, 255, 0.04);
-            cursor: pointer;
-            position: relative;
-            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .check-row input[type="checkbox"]:checked {
-            background: var(--amber);
-            border-color: var(--amber);
-        }
-
-        .check-row input[type="checkbox"]:checked::after {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 3px;
-            width: 5px;
-            height: 10px;
-            border: solid #1d1304;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        .check-row input[type="checkbox"]:focus-visible {
-            outline: none;
-            border-color: var(--amber);
-            box-shadow: 0 0 0 3px var(--amber-soft);
-        }
-
-        .check-text {
-            display: flex;
-            flex-direction: column;
-            gap: 0.15rem;
-            min-width: 0;
-        }
-
-        .check-name { font-weight: 600; font-size: 0.95rem; }
-
-        .check-note {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.45;
-        }
-
-        /* honeypot — off-screen rather than display:none, which some bots skip */
-        .hp-field {
-            position: absolute;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-
-        .form-status {
-            margin-top: 1rem;
-            font-size: 0.88rem;
-            line-height: 1.5;
-            min-height: 1.4em;
-            color: var(--text-secondary);
-        }
-
-        .form-status.is-error { color: var(--coral); }
-        .form-status a { color: var(--amber); }
-
-        .form-done {
-            text-align: center;
-            padding: 1rem 0;
-            outline: none;
-        }
-
-        .form-done h3 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.8rem;
-        }
-
-        .form-done p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            max-width: 460px;
-            margin: 0 auto 1.8rem;
-        }
-
-        /* --- TestFlight + QR --- */
-        .tf-block {
-            display: grid;
-            gap: 2rem;
-            align-items: center;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .tf-copy h3 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.4rem;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.8rem;
-        }
-
-        .tf-copy p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 1.6rem;
-        }
-
-        .tf-hint {
-            margin-top: 1.4rem;
+        .band-note {
+            margin-top: 1.5rem;
             font-size: 0.85rem;
             color: var(--text-muted);
         }
-
-        /* the QR is a desktop-only enhancement — on a phone you'd just tap */
-        .qr-plaque { display: none; }
-
-        /* --- FAQ --- */
-        .faq-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 1rem 2.5rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .faq-item {
-            padding: 1.6rem 0;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        .faq-item:last-child { border-bottom: none; }
-
-        .faq-item h3 {
-            font-family: var(--font-display);
-            font-weight: 600;
-            font-size: 1.02rem;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.5rem;
-        }
-
-        .faq-item p {
-            font-size: 0.92rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .faq-footnote {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .faq-footnote a {
-            color: var(--amber);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-            transition: border-color 0.25s;
-        }
-
-        .faq-footnote a:hover { border-bottom-color: currentColor; }
 
         /* ========================
            ABOUT SECTION
@@ -1267,32 +956,6 @@
         /* ========================
            RESPONSIVE
            ======================== */
-        @media (min-width: 769px) {
-            .tf-block { grid-template-columns: 1fr auto; gap: 3rem; }
-
-            .qr-plaque {
-                display: block;
-                text-align: center;
-            }
-
-            .qr-plaque img {
-                display: block;
-                width: 176px;
-                height: 176px;
-                padding: 12px;
-                background: var(--text-primary);
-                border-radius: var(--radius-md);
-                box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
-            }
-
-            .qr-plaque figcaption {
-                margin-top: 0.8rem;
-                font-size: 0.78rem;
-                color: var(--text-secondary);
-                max-width: 176px;
-            }
-        }
-
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -1343,8 +1006,6 @@
                 font-size: clamp(1.8rem, 7vw, 2.5rem);
             }
 
-            .steps-grid { grid-template-columns: 1fr; }
-
             .footer-inner {
                 flex-direction: column;
                 gap: 1.25rem;
@@ -1356,11 +1017,8 @@
             nav { padding: 1rem 1.25rem; }
             .hero { padding: 7rem 1.25rem 5rem; }
             .apps-section { padding: 3rem 1.25rem 6rem; }
-            .testers-section { padding: 1.5rem 1.25rem 6rem; }
-            .form-card, .tf-block { padding: 1.5rem; }
-            .faq-card { padding: 0.5rem 1.5rem; }
-            .step-card { padding: 1.6rem; }
-            .subsection-title { margin: 3.5rem 0 1.5rem; }
+            .testers-band { padding: 0 1.25rem 6rem; }
+            .band-card { padding: 2.5rem 1.5rem; }
             .about-section { padding: 4rem 1.25rem 6rem; }
             .app-card { padding: 1.75rem; }
         }
@@ -1394,7 +1052,7 @@
         </button>
         <ul class="nav-links">
             <li><a href="#apps">Apps</a></li>
-            <li><a href="#testers">Testers</a></li>
+            <li><a href="beta.html">Testers</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -1494,189 +1152,13 @@
         </section>
 
         <!-- ====== TESTERS ====== -->
-        <section class="testers-section" id="testers">
-            <div class="section-header reveal">
+        <section class="testers-band" id="testers">
+            <div class="band-card reveal">
                 <span class="section-label">Beta program</span>
-                <h2 class="section-title">Get our apps<br>before anyone else.</h2>
-                <p class="testers-sub">We're looking for a small group of testers to try early builds on iPhone and iPad. It's free, it takes about five minutes to set up, and you can leave any time.</p>
-            </div>
-
-            <h3 class="subsection-title reveal">Five minutes, start to finish.</h3>
-
-            <div class="steps-grid">
-                <article class="step-card reveal stagger-1">
-                    <div class="step-num" aria-hidden="true">1</div>
-                    <h3>Sign up below</h3>
-                    <p>Enter your email and tick the apps you'd like to test. Use the address attached to your Apple ID — that's where Apple sends the invite, and an invite sent anywhere else can't be opened.</p>
-                </article>
-
-                <article class="step-card reveal stagger-2">
-                    <div class="step-num" aria-hidden="true">2</div>
-                    <h3>We send you an invite</h3>
-                    <p>You'll get an email from TestFlight with a Start Testing button. Beta slots are limited, so we add testers in small batches — if a build isn't ready yet, we'll hold your spot and email you when it is.</p>
-                </article>
-
-                <article class="step-card reveal stagger-3">
-                    <div class="step-num" aria-hidden="true">3</div>
-                    <h3>Install TestFlight</h3>
-                    <p>TestFlight is Apple's free app for running beta software. Install it from the App Store before you tap the invite, so the invite opens straight into it.</p>
-                </article>
-
-                <article class="step-card reveal stagger-4">
-                    <div class="step-num" aria-hidden="true">4</div>
-                    <h3>Accept and install the beta</h3>
-                    <p>Open the invite on your iPhone or iPad, tap Start Testing, and the beta installs like any other app. New builds show up in TestFlight automatically.</p>
-                </article>
-
-                <article class="step-card reveal stagger-4">
-                    <div class="step-num" aria-hidden="true">5</div>
-                    <h3>Tell us what you think</h3>
-                    <p>Screenshot anything odd and tap Send Beta Feedback in TestFlight, or just reply to our email. Crashes, rough edges, confusing bits, wild ideas — all of it is useful.</p>
-                </article>
-            </div>
-
-            <div class="testers-narrow">
-                <h3 class="subsection-title reveal">Tell us what you'd like to test.</h3>
-
-                <div class="form-card reveal stagger-1">
-                    <form id="tester-form">
-                        <input type="hidden" name="_subject" value="New LPK Apps beta tester">
-
-                        <div class="field">
-                            <label class="field-label" for="email">Apple ID email</label>
-                            <p class="field-hint" id="email-hint">TestFlight invites can only be opened by the Apple ID that owns the address, so use that one.</p>
-                            <input id="email" name="email" type="email" required
-                                   autocomplete="email" inputmode="email" spellcheck="false"
-                                   placeholder="you@example.com" aria-describedby="email-hint">
-                        </div>
-
-                        <fieldset class="field">
-                            <legend class="field-label">Which apps would you like to test?</legend>
-                            <p class="field-hint">Pick as many as you like.</p>
-                            <div class="check-grid">
-                                <label class="check-row">
-                                    <input type="checkbox" name="apps" value="Root Word">
-                                    <span class="check-text">
-                                        <span class="check-name">Root Word</span>
-                                        <span class="check-note">Live on the App Store — test updates before everyone else</span>
-                                    </span>
-                                </label>
-                                <label class="check-row">
-                                    <input type="checkbox" name="apps" value="WC INKs">
-                                    <span class="check-text">
-                                        <span class="check-name">WC INKs</span>
-                                        <span class="check-note">In development — inks, recipes and the creator showcase</span>
-                                    </span>
-                                </label>
-                                <label class="check-row">
-                                    <input type="checkbox" name="apps" value="Blob Tennis">
-                                    <span class="check-text">
-                                        <span class="check-name">Blob Tennis</span>
-                                        <span class="check-note">In development — real ball physics in a squishy body</span>
-                                    </span>
-                                </label>
-                                <label class="check-row">
-                                    <input type="checkbox" name="apps" value="CallSign Check">
-                                    <span class="check-text">
-                                        <span class="check-name">CallSign Check</span>
-                                        <span class="check-note">In development — US ham radio callsign lookup</span>
-                                    </span>
-                                </label>
-                                <label class="check-row">
-                                    <input type="checkbox" name="apps" value="Anything new">
-                                    <span class="check-text">
-                                        <span class="check-name">Anything new</span>
-                                        <span class="check-note">Surprise me — add me to whatever we start next</span>
-                                    </span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <div class="field">
-                            <label class="field-label" for="note">Anything we should know? <span class="field-optional">Optional</span></label>
-                            <textarea id="note" name="note" rows="3"
-                                      placeholder="Your device, iOS version, what you're most keen to try..."></textarea>
-                        </div>
-
-                        <!-- Honeypot: invisible to people, irresistible to bots.
-                             Formspree drops submissions with _gotcha filled; we block it client-side too. -->
-                        <div class="hp-field" aria-hidden="true">
-                            <label for="_gotcha">Leave this field empty</label>
-                            <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-                        </div>
-
-                        <button type="submit" id="form-submit" class="btn-flagship">
-                            Sign me up <span class="arrow">&#8594;</span>
-                        </button>
-
-                        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-                    </form>
-
-                    <div class="form-done" id="form-done" tabindex="-1" hidden>
-                        <h3>You're on the list.</h3>
-                        <p>Thanks. We'll email your Apple ID address when there's a build ready for you. While you wait, put TestFlight on your iPhone or iPad so the invite opens straight into it.</p>
-                        <a class="btn-flagship" href="https://apps.apple.com/us/app/testflight/id899247664"
-                           target="_blank" rel="noopener">Get TestFlight <span class="arrow">&#8599;</span></a>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="subsection-title reveal">Get TestFlight ready.</h3>
-
-            <div class="tf-block reveal stagger-1">
-                <div class="tf-copy">
-                    <h3>Install TestFlight</h3>
-                    <p>Betas only install through TestFlight, so it's worth having it on your phone before your invite lands. It's free, it's made by Apple, and it lives alongside the App Store.</p>
-                    <a class="btn-flagship" href="https://apps.apple.com/us/app/testflight/id899247664"
-                       target="_blank" rel="noopener">Get TestFlight <span class="arrow">&#8599;</span></a>
-                    <p class="tf-hint">Already on your phone? You're all set — nothing else to do until the invite arrives.</p>
-                </div>
-
-                <figure class="qr-plaque">
-                    <img src="assets/testflight-qr.svg" alt="" aria-hidden="true" width="176" height="176">
-                    <figcaption>Scan with your iPhone camera</figcaption>
-                </figure>
-            </div>
-
-            <div class="testers-narrow">
-                <h3 class="subsection-title reveal">The bits people usually ask.</h3>
-
-                <div class="faq-card reveal stagger-1">
-                    <div class="faq-item">
-                        <h3>Does it cost anything?</h3>
-                        <p>No. Betas are free and we'll never ask you for payment details.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>Which devices do I need?</h3>
-                        <p>An iPhone or iPad on a recent version of iOS or iPadOS. Everything we make is iOS-only right now — there's no Android or web beta.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>Why do you need my Apple ID email?</h3>
-                        <p>Apple sends the TestFlight invite to one specific address, and only the Apple ID that owns that address can redeem it. Sign up with a different email and the invite simply won't open.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>How long will I wait?</h3>
-                        <p>It depends on the app. Root Word ships updates regularly, so those invites go out often. WC INKs, Blob Tennis and CallSign Check invite testers as each one reaches a build worth playing. Either way, you'll hear from us.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>How much time does this take?</h3>
-                        <p>As little as you like. Use the app the way you normally would and tell us when something feels wrong. No minimum, no schedule, no quiz.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>Will a beta break my phone?</h3>
-                        <p>No. TestFlight builds are sandboxed like any other app, and where an App Store version already exists the beta installs alongside it. Betas can crash or behave oddly — that's rather the point — and you can delete one at any time.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>Can I stop?</h3>
-                        <p>Any time. Delete the beta, or reply "stop" to any email from us and we'll take your address off the list.</p>
-                    </div>
-                    <div class="faq-item">
-                        <h3>What happens to my email address?</h3>
-                        <p>It sits in our inbox and in TestFlight's tester list. That's it — no newsletter, no ad networks, nothing sold on. Ask us to delete it and we will.</p>
-                    </div>
-                </div>
-
-                <p class="faq-footnote reveal">Anything else? Email us at <a href="mailto:lpkappsstudio@gmail.com">lpkappsstudio@gmail.com</a>.</p>
+                <h2 class="band-title">Get our apps before anyone else.</h2>
+                <p class="band-sub">We're looking for a small group of testers to try early builds on iPhone and iPad. It's free, it takes about five minutes to set up, and you can leave any time.</p>
+                <a class="btn-flagship" href="beta.html">Become a tester <span class="arrow">&#8594;</span></a>
+                <p class="band-note">Root Word, WC INKs, Blob Tennis and CallSign Check.</p>
             </div>
         </section>
 
@@ -1705,7 +1187,7 @@
             <span class="footer-brand">LPK Apps</span>
             <span class="footer-copy">&copy; 2026 LPK Apps. All rights reserved.</span>
             <ul class="footer-links">
-                <li><a href="#testers">Become a tester</a></li>
+                <li><a href="beta.html">Become a tester</a></li>
                 <li><a href="mailto:lpkappsstudio@gmail.com">Contact</a></li>
             </ul>
         </div>
@@ -1743,90 +1225,6 @@
                 toggle.classList.remove('active');
                 toggle.setAttribute('aria-expanded', 'false');
             });
-        });
-
-        /* ==================================================================
-           FORMSPREE — PASTE YOUR FORM ID HERE
-           1. Make a free form at https://formspree.io
-           2. It gives you an endpoint like  https://formspree.io/f/xayzbwqd
-           3. Put the last part ('xayzbwqd') between the quotes below.
-           Nothing else on this page needs to change.
-           Until you do, the form falls back to opening a prefilled email.
-           ================================================================== */
-        const FORMSPREE_ID = 'xvkppdvb';
-        const STUDIO_EMAIL = 'lpkappsstudio@gmail.com';
-
-        // Tester signup
-        const form = document.getElementById('tester-form');
-        const status = document.getElementById('form-status');
-        const submitBtn = document.getElementById('form-submit');
-        const done = document.getElementById('form-done');
-
-        const setStatus = (msg, kind) => {
-            status.textContent = msg;
-            status.className = 'form-status' + (kind ? ' is-' + kind : '');
-        };
-
-        const buildMailto = (email, picked, note) => {
-            const body = "I'd like to become a beta tester.\n\n"
-                + 'Apple ID email: ' + email + '\n'
-                + 'Apps: ' + picked.join(', ') + '\n'
-                + (note ? 'Notes: ' + note + '\n' : '');
-            return 'mailto:' + STUDIO_EMAIL
-                + '?subject=' + encodeURIComponent('Become a tester')
-                + '&body=' + encodeURIComponent(body);
-        };
-
-        const showDone = () => {
-            form.hidden = true;
-            done.hidden = false;
-            done.focus();
-        };
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Honeypot tripped — pretend it worked, send nothing.
-            if (form.elements._gotcha.value) { showDone(); return; }
-
-            const picked = Array.from(form.querySelectorAll('input[name="apps"]:checked'))
-                                .map((i) => i.value);
-            if (!picked.length) {
-                setStatus('Pick at least one app so we know which beta to send you.', 'error');
-                form.querySelector('input[name="apps"]').focus();
-                return;
-            }
-
-            const email = form.elements.email.value.trim();
-            const note = form.elements.note.value.trim();
-
-            // Not wired up to Formspree yet — fall back to a prefilled email.
-            if (!FORMSPREE_ID || FORMSPREE_ID === 'YOUR_FORM_ID') {
-                setStatus('Opening your email app so you can send this straight to us…');
-                window.location.href = buildMailto(email, picked, note);
-                return;
-            }
-
-            const label = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending…';
-            setStatus('Sending…');
-
-            try {
-                const res = await fetch('https://formspree.io/f/' + FORMSPREE_ID, {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json' },
-                    body: new FormData(form)
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                showDone();
-            } catch (err) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = label;
-                setStatus("That didn't send. You can email it to us instead — we read every one.", 'error');
-                status.insertAdjacentHTML('beforeend',
-                    ' <a href="' + buildMailto(email, picked, note) + '">Send it by email</a>');
-            }
         });
     </script>
 </body>
