@@ -405,6 +405,28 @@
             gap: 1.5rem;
         }
 
+        /* Row label separating shipped apps from the ones still in the workshop */
+        .grid-label {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0 0.25rem;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .grid-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
+        }
+
         /* App Card */
         .app-card {
             position: relative;
@@ -599,37 +621,6 @@
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
         .app-card[data-color="lime"] .btn-learn { color: var(--lime); }
 
-        .card-ctas {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-store {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            padding: 0.68rem 1.4rem;
-            border-radius: 100px;
-            background: var(--violet);
-            color: #0b0b1e;
-            font-family: var(--font-body);
-            font-size: 0.86rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 6px 22px rgba(120, 120, 255, 0.28);
-        }
-
-        .btn-store:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(120, 120, 255, 0.4);
-        }
-
-        .btn-store .arrow { transition: transform 0.3s ease; }
-        .btn-store:hover .arrow { transform: translateX(4px); }
-
         /* ========================
            FLAGSHIP CARD (Root Word)
            ======================== */
@@ -671,6 +662,18 @@
             color: var(--amber);
             font-weight: 500;
             letter-spacing: 0.02em;
+        }
+
+        .app-card[data-color="violet"] .flagship-tagline { color: var(--violet); }
+
+        .app-card[data-color="violet"] .btn-flagship {
+            background: var(--violet);
+            color: #0b0b1e;
+            box-shadow: 0 6px 22px rgba(120, 120, 255, 0.28);
+        }
+
+        .app-card[data-color="violet"] .btn-flagship:hover {
+            box-shadow: 0 10px 30px rgba(120, 120, 255, 0.4);
         }
 
         .app-card.flagship > div > p {
@@ -741,6 +744,13 @@
             transform: rotate(0.4deg) translateY(-4px);
         }
 
+        /* CallSign Check's shot is near-black, so give it an edge and a glow
+           to keep it from melting into the card. */
+        .app-card[data-color="violet"] .flagship-art .shot {
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(120, 120, 255, 0.16);
+        }
+
         .flagship-art .plant {
             position: absolute;
             filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
@@ -768,6 +778,7 @@
 
         /* Ghost card for future apps */
         .ghost-card {
+            grid-column: 1 / -1;
             border-style: dashed;
             border-color: rgba(255, 255, 255, 0.1);
             background: transparent;
@@ -1137,22 +1148,32 @@
                     </div>
                 </article>
 
-                <!-- CallSign Check -->
-                <article class="app-card reveal stagger-2" data-color="violet">
-                    <span class="app-card-tag">Utility &middot; Out now on iOS</span>
-                    <div class="app-icon app-icon-img">
-                        <img src="assets/callsigncheck-icon.png" alt="CallSign Check logo — amber signal waves over a black transceiver plate">
+                <!-- CallSign Check — flagship -->
+                <article class="app-card flagship reveal stagger-2" data-color="violet">
+                    <div>
+                        <span class="app-card-tag">Utility &middot; Out now on iOS</span>
+                        <div class="flagship-head">
+                            <img src="assets/callsigncheck-icon.png" alt="CallSign Check app icon — amber signal waves over a black transceiver plate">
+                            <div>
+                                <h3>CallSign Check</h3>
+                                <span class="flagship-tagline">Instant ham radio callsign lookup</span>
+                            </div>
+                        </div>
+                        <p>Type a callsign, get the full picture — operator name, license class, grid square and the whole FCC dossier, plus distance and beam heading from where you're standing. Worldwide DX lookups and live band conditions come along for the ride.</p>
+                        <div class="flagship-ctas">
+                            <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="btn-flagship">Download on the App Store <span class="arrow">&#8594;</span></a>
+                            <a href="callsigncheck.html" class="btn-learn">Explore CallSign Check <span>&#8594;</span></a>
+                        </div>
                     </div>
-                    <h3>CallSign Check</h3>
-                    <p>Instant US ham radio callsign lookup — operator name, license class, grid square, FCC details, DX/QRZ lookups, and live band conditions. Free on iPhone and iPad.</p>
-                    <div class="card-ctas">
-                        <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="btn-store">Download on the App Store <span class="arrow">&#8594;</span></a>
-                        <a href="callsigncheck.html" class="btn-learn">Explore <span>&#8594;</span></a>
+                    <div class="flagship-art" aria-hidden="true">
+                        <img class="shot" src="assets/callsigncheck-shot.jpg" alt="" loading="lazy">
                     </div>
                 </article>
 
+                <div class="grid-label reveal">In development</div>
+
                 <!-- WC INKs -->
-                <article class="app-card reveal stagger-3" data-color="coral">
+                <article class="app-card reveal stagger-1" data-color="coral">
                     <span class="app-card-tag">Creative &middot; In Development</span>
                     <div class="app-icon app-icon-img">
                         <img src="assets/wcinks-logo.png" alt="WC INKs logo — iridescent liquid chrome lettering">
@@ -1163,7 +1184,7 @@
                 </article>
 
                 <!-- Blob Tennis -->
-                <article class="app-card reveal stagger-4" data-color="lime">
+                <article class="app-card reveal stagger-2" data-color="lime">
                     <span class="app-card-tag">Game &middot; In Development</span>
                     <div class="app-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64" fill="none">
@@ -1179,7 +1200,7 @@
                 </article>
 
                 <!-- Future apps -->
-                <article class="app-card ghost-card reveal stagger-4" data-color="teal" aria-label="More apps in the works">
+                <article class="app-card ghost-card reveal stagger-3" data-color="teal" aria-label="More apps in the works">
                     <div class="plus" aria-hidden="true">+</div>
                     <p>More in the works.<br>The next idea is already sprouting.</p>
                 </article>
