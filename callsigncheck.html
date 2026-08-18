@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CallSign Check — Instant Ham Radio Callsign Lookup. Coming Soon.</title>
-    <meta name="description" content="CallSign Check by LPK Apps — instant US ham radio callsign lookup. Operator name, license class, grid square, FCC details, DX/QRZ lookups and live band conditions. In development.">
+    <title>CallSign Check — Instant Ham Radio Callsign Lookup. Free on iOS.</title>
+    <meta name="description" content="CallSign Check by LPK Apps — instant US ham radio callsign lookup. Operator name, license class, grid square, FCC details, DX/QRZ lookups and live band conditions. Free on the App Store for iPhone and iPad.">
     <link rel="icon" href="assets/callsigncheck-icon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -305,6 +305,59 @@
         .btn-amber:hover {
             transform: translateY(-3px);
             box-shadow: 0 14px 40px rgba(255, 176, 32, 0.42);
+        }
+
+        .nav-status-live {
+            text-decoration: none;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .nav-status-live:hover {
+            background: rgba(255, 176, 32, 0.2);
+            border-color: rgba(255, 176, 32, 0.6);
+        }
+
+        .store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.62rem 1.5rem 0.62rem 1.2rem;
+            border-radius: 4px;
+            background: var(--amber);
+            color: #1a1400;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            box-shadow: 0 8px 30px rgba(255, 176, 32, 0.28);
+        }
+
+        .store-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(255, 176, 32, 0.42);
+        }
+
+        .store-badge svg { width: 25px; height: 25px; flex-shrink: 0; }
+
+        .store-badge .badge-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.15;
+            text-align: left;
+            font-family: var(--display);
+            text-transform: uppercase;
+        }
+
+        .store-badge .badge-text small {
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            opacity: 0.75;
+        }
+
+        .store-badge .badge-text strong {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
         }
 
         .btn-ghost {
@@ -826,7 +879,7 @@
             <img src="assets/callsigncheck-icon.png" alt="CallSign Check logo">
             <span>CallSign Check</span>
         </a>
-        <span class="nav-status">In Development</span>
+        <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="nav-status nav-status-live">Out now on iOS</a>
     </nav>
 
     <main>
@@ -843,9 +896,17 @@
             <img class="hero-logo" src="assets/callsigncheck-icon.png" alt="CallSign Check logo — amber signal waves over a black transceiver plate">
             <span class="hero-eyebrow">73 &middot; DE LPK APPS</span>
             <h1>Know who's <span class="amber-text">on frequency.</span></h1>
-            <p class="hero-sub">Instant US ham radio callsign lookup — operator name, license class, grid square, and full FCC details. Companion app for <strong>callsigncheck.com.</strong></p>
+            <p class="hero-sub">Instant US ham radio callsign lookup — operator name, license class, grid square, and full FCC details. Free on iPhone and iPad, and the companion app for <strong>callsigncheck.com.</strong></p>
             <div class="hero-actions">
-                <a href="mailto:lpkappsstudio@gmail.com?subject=Notify%20me%20about%20CallSign%20Check" class="btn-amber">Get notified at launch</a>
+                <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="store-badge" aria-label="Download CallSign Check on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
                 <a href="https://callsigncheck.com" target="_blank" rel="noopener" class="btn-ghost">Visit callsigncheck.com &#8599;</a>
             </div>
             <div class="scroll-hint" aria-hidden="true">
@@ -982,13 +1043,21 @@
         <!-- ====== CTA ====== -->
         <section class="cta-section">
             <img class="cta-logo" src="assets/callsigncheck-icon.png" alt="" aria-hidden="true">
-            <h2 class="sec-title reveal">Still calibrating.</h2>
-            <p class="sec-copy reveal d1">CallSign Check is in active development. Get on the list and we'll ping you the moment it's live on the App Store.</p>
+            <h2 class="sec-title reveal">On the air.</h2>
+            <p class="sec-copy reveal d1">CallSign Check is out now on the App Store — free, no account, no clutter. Requires iOS 15.1 or later.</p>
             <div class="cta-actions reveal d2">
-                <a href="mailto:lpkappsstudio@gmail.com?subject=Notify%20me%20about%20CallSign%20Check" class="btn-amber">Get notified at launch</a>
-                <a href="rootword.html" class="btn-ghost">Meanwhile, try Root Word &#8594;</a>
+                <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="store-badge" aria-label="Download CallSign Check on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
+                <a href="rootword.html" class="btn-ghost">Also from LPK Apps: Root Word &#8594;</a>
             </div>
-            <p class="cta-note reveal d3">Want it even sooner? <a href="beta.html?app=callsigncheck">Join the beta tester list &#8594;</a></p>
+            <p class="cta-note reveal d3">Want new features first? <a href="beta.html?app=callsigncheck">Join the beta tester list &#8594;</a></p>
         </section>
     </main>
 

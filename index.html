@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees, out now on the App Store — plus Blob Tennis, WC INKs and CallSign Check on the way.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — and CallSign Check, instant ham radio callsign lookup. Both out now on the App Store, with Blob Tennis and WC INKs on the way.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -599,6 +599,37 @@
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
         .app-card[data-color="lime"] .btn-learn { color: var(--lime); }
 
+        .card-ctas {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-store {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.68rem 1.4rem;
+            border-radius: 100px;
+            background: var(--violet);
+            color: #0b0b1e;
+            font-family: var(--font-body);
+            font-size: 0.86rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 6px 22px rgba(120, 120, 255, 0.28);
+        }
+
+        .btn-store:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(120, 120, 255, 0.4);
+        }
+
+        .btn-store .arrow { transition: transform 0.3s ease; }
+        .btn-store:hover .arrow { transform: translateX(4px); }
+
         /* ========================
            FLAGSHIP CARD (Root Word)
            ======================== */
@@ -1106,8 +1137,22 @@
                     </div>
                 </article>
 
+                <!-- CallSign Check -->
+                <article class="app-card reveal stagger-2" data-color="violet">
+                    <span class="app-card-tag">Utility &middot; Out now on iOS</span>
+                    <div class="app-icon app-icon-img">
+                        <img src="assets/callsigncheck-icon.png" alt="CallSign Check logo — amber signal waves over a black transceiver plate">
+                    </div>
+                    <h3>CallSign Check</h3>
+                    <p>Instant US ham radio callsign lookup — operator name, license class, grid square, FCC details, DX/QRZ lookups, and live band conditions. Free on iPhone and iPad.</p>
+                    <div class="card-ctas">
+                        <a href="https://apps.apple.com/us/app/callsign-check/id6791707672" target="_blank" rel="noopener" class="btn-store">Download on the App Store <span class="arrow">&#8594;</span></a>
+                        <a href="callsigncheck.html" class="btn-learn">Explore <span>&#8594;</span></a>
+                    </div>
+                </article>
+
                 <!-- WC INKs -->
-                <article class="app-card reveal stagger-2" data-color="coral">
+                <article class="app-card reveal stagger-3" data-color="coral">
                     <span class="app-card-tag">Creative &middot; In Development</span>
                     <div class="app-icon app-icon-img">
                         <img src="assets/wcinks-logo.png" alt="WC INKs logo — iridescent liquid chrome lettering">
@@ -1118,7 +1163,7 @@
                 </article>
 
                 <!-- Blob Tennis -->
-                <article class="app-card reveal stagger-3" data-color="lime">
+                <article class="app-card reveal stagger-4" data-color="lime">
                     <span class="app-card-tag">Game &middot; In Development</span>
                     <div class="app-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64" fill="none">
@@ -1131,17 +1176,6 @@
                     <h3>Blob Tennis</h3>
                     <p>A real sport in a squishy body — flick to swing, spin like you mean it, and out-think a tour of blob rivals. Every shot obeys real ball physics.</p>
                     <a href="blobtennis.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
-                </article>
-
-                <!-- CallSign Check -->
-                <article class="app-card reveal stagger-4" data-color="violet">
-                    <span class="app-card-tag">Utility &middot; In Development</span>
-                    <div class="app-icon app-icon-img">
-                        <img src="assets/callsigncheck-icon.png" alt="CallSign Check logo — amber signal waves over a black transceiver plate">
-                    </div>
-                    <h3>CallSign Check</h3>
-                    <p>Instant US ham radio callsign lookup — operator name, license class, grid square, FCC details, DX/QRZ lookups, and live band conditions.</p>
-                    <a href="callsigncheck.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
                 </article>
 
                 <!-- Future apps -->
@@ -1160,7 +1194,7 @@
                 <h2 class="band-title">Get our apps <span class="gold-text">before anyone else.</span></h2>
                 <p class="band-sub">We're looking for a small group of testers to try early builds on iPhone and iPad. It's free, it takes about five minutes to set up, and you can leave any time.</p>
                 <a class="btn-flagship" href="beta.html">Become a tester <span class="arrow">&#8594;</span></a>
-                <p class="band-note">Root Word, WC INKs, Blob Tennis and CallSign Check.</p>
+                <p class="band-note">Root Word, CallSign Check, WC INKs and Blob Tennis.</p>
             </div>
         </section>
 
