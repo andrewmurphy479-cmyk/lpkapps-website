@@ -327,7 +327,15 @@
   }
   .signup h2 { font-size: clamp(20px, 2.8vw, 27px); font-weight: 700; font-variation-settings: 'wdth' 84; }
   .signup p { margin-top: 12px; color: var(--ink-dim); font-size: 15px; max-width: 56ch; }
-  form { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; }
+  form { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+  form .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  textarea {
+    font-family: var(--mono); font-size: 13.5px; line-height: 1.5;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: var(--r);
+    padding: 11px 14px; resize: vertical; width: 100%;
+  }
+  textarea::placeholder { color: var(--ink-faint); }
   input[type=email] {
     flex: 1 1 260px;
     font-family: var(--mono); font-size: 14px;
@@ -360,6 +368,8 @@
     display: flex; gap: 14px; flex-wrap: wrap;
   }
   footer .sp { flex: 1; }
+  footer a { color: var(--ink-dim); }
+  footer a:hover { color: var(--safe); }
 </style>
 </head>
 <body>
@@ -538,9 +548,14 @@ git config --get remote.origin.url</pre>
       email address and you will hear once &mdash; when it is ready.
     </p>
     <form id="signup">
-      <input type="email" id="email" name="email" placeholder="you@example.com" required aria-label="Email address">
+      <div class="row">
+        <input type="email" id="email" name="email" placeholder="you@example.com" required aria-label="Email address">
+        <button type="submit">Tell me when it ships</button>
+      </div>
+      <textarea id="message" name="message" rows="2"
+        placeholder="Optional: anything you want to tell me? Questions welcome."
+        aria-label="Optional message"></textarea>
       <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="gotcha">
-      <button type="submit">Tell me when it ships</button>
     </form>
     <div class="formnote" id="note" role="status"></div>
   </section>
@@ -548,7 +563,9 @@ git config --get remote.origin.url</pre>
   <footer>
     <span>Loose Ends &mdash; work that only exists on one computer</span>
     <span class="sp"></span>
-    <span>Made by Andrew Murphy</span>
+    <span>Made by Andrew Murphy at
+      <a href="https://lpkapps.com">LPK Apps</a> &middot;
+      <a href="mailto:lpkappsstudio@gmail.com">lpkappsstudio@gmail.com</a></span>
   </footer>
 
 </div>
@@ -631,6 +648,7 @@ git config --get remote.origin.url</pre>
         email: email,
         // ASCII only. A non-ASCII subject (an em dash) was rejected with a
         // 400 during testing, so this line stays plain deliberately.
+        message: document.getElementById('message').value.trim(),
         _subject: 'Loose Ends signup',
         _gotcha: document.getElementById('company').value
       })
