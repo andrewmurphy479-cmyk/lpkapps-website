@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git Dashboard — find the work that only exists on one computer</title>
+<meta name="description" content="Git Dashboard scans every project folder on your machine and shows which work is committed, which is pushed, and which would disappear with the laptop. Read-only. Never touches the network.">
+
+<meta property="og:title" content="Git Dashboard">
+<meta property="og:description" content="How much of your work exists on only one computer?">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0B121A;
+    --panel:     #121D28;
+    --panel-2:   #17242F;
+    --line:      #223547;
+    --line-soft: #1B2A38;
+
+    --ink:       #E8EFF6;
+    --ink-dim:   #93A7B9;
+    --ink-faint: #5F7387;
+
+    --risk:      #FF7C66;
+    --local:     #F0B441;
+    --safe:      #46C9B0;
+
+    --display: 'Archivo', 'Bahnschrift', 'DIN Alternate', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
+
+    --r: 3px;
+    --gut: clamp(20px, 5vw, 56px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: var(--display);
+    font-variation-settings: 'wdth' 100;
+    background:
+      linear-gradient(rgba(150,185,215,.028) 1px, transparent 1px) 0 0 / 100% 54px,
+      radial-gradient(120% 60% at 50% -10%, #16232F 0%, var(--bg) 60%);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 var(--gut); }
+
+  a { color: var(--safe); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--safe); outline-offset: 3px; }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    font-variation-settings: 'wdth' 82;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---- masthead ---- */
+  .top {
+    display: flex; align-items: center; gap: 14px;
+    padding: 22px 0 0;
+  }
+  .mark {
+    font-size: 14px; font-weight: 700;
+    font-variation-settings: 'wdth' 80;
+    letter-spacing: .17em; text-transform: uppercase;
+  }
+  .top .sp { flex: 1; }
+  .pill {
+    font-family: var(--mono);
+    font-size: 11px; color: var(--ink-faint);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 12px;
+  }
+
+  /* ---- hero ---- */
+  .hero { padding: clamp(48px, 9vw, 92px) 0 0; }
+  .hero h1 {
+    font-size: clamp(34px, 6.4vw, 68px);
+    font-weight: 700;
+    font-variation-settings: 'wdth' 84;
+    line-height: 1.02;
+    letter-spacing: -.015em;
+    margin: 18px 0 0;
+    max-width: 15ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--local); }
+  .lede {
+    margin-top: 22px;
+    max-width: 60ch;
+    font-size: clamp(15px, 1.7vw, 17.5px);
+    color: var(--ink-dim);
+    font-weight: 400;
+  }
+
+  /* ---- product shot ---- */
+  .shot {
+    margin-top: clamp(34px, 6vw, 54px);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    background: var(--panel);
+    overflow: hidden;
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot figcaption {
+    padding: 12px 18px;
+    border-top: 1px solid var(--line);
+    background: var(--panel-2);
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+  }
+
+  /* ---- the manifest ---- */
+  .manifest {
+    margin-top: 28px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .manifest-head {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel-2);
+  }
+  .manifest-head .t {
+    font-size: 11px; font-weight: 600;
+    font-variation-settings: 'wdth' 82;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .manifest-head .n { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+  .manifest-head .sp { flex: 1; }
+
+  .scroller { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 460px; }
+  th {
+    font-family: var(--mono);
+    font-size: 10.5px; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink-dim);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.name { color: var(--ink); }
+  td.num { color: var(--ink); font-weight: 500; }
+
+  .where { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+  .d-risk { background: var(--risk); }
+  .d-local { background: var(--local); }
+  .d-safe { background: var(--safe); }
+  .w-risk { color: var(--risk); }
+  .w-local { color: var(--local); }
+  .w-safe { color: var(--safe); }
+
+  .verdict {
+    padding: 16px 18px;
+    border-top: 1px solid var(--line);
+    background: var(--panel-2);
+    font-size: 14.5px;
+    color: var(--ink-dim);
+  }
+  .verdict b { color: var(--ink); font-weight: 700; }
+  .verdict .note {
+    display: block; margin-top: 5px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+  }
+
+  /* scan-in reveal */
+  @media (prefers-reduced-motion: no-preference) {
+    .manifest tbody tr { opacity: 0; animation: row .32s ease-out forwards; }
+    .manifest .verdict { opacity: 0; animation: row .4s ease-out .78s forwards; }
+  }
+  @keyframes row { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* ---- the three stations ---- */
+  .rail { margin-top: clamp(64px, 11vw, 116px); }
+  .rail h2, .block h2 {
+    font-size: clamp(22px, 3.2vw, 30px);
+    font-weight: 700;
+    font-variation-settings: 'wdth' 84;
+    letter-spacing: -.01em;
+    margin-top: 12px;
+  }
+  .rail p.sub, .block p.sub {
+    margin-top: 12px; max-width: 62ch;
+    color: var(--ink-dim); font-size: 15.5px;
+  }
+  .stations {
+    margin-top: 30px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--line); border-radius: var(--r);
+    overflow: hidden;
+  }
+  .station { padding: 22px 20px; border-right: 1px solid var(--line); background: var(--panel); }
+  .station:last-child { border-right: none; }
+  .station .lbl {
+    font-size: 10.5px; font-weight: 600;
+    font-variation-settings: 'wdth' 82;
+    letter-spacing: .15em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .station .txt { margin-top: 12px; font-size: 14px; color: var(--ink-dim); }
+  .station .move {
+    margin-top: 14px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+  }
+  @media (max-width: 720px) {
+    .stations { grid-template-columns: 1fr; }
+    .station { border-right: none; border-bottom: 1px solid var(--line); }
+    .station:last-child { border-bottom: none; }
+  }
+
+  /* ---- generic block ---- */
+  .block { margin-top: clamp(64px, 11vw, 116px); }
+  .points { margin-top: 28px; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); grid-template-columns: 1fr 1fr; }
+  .point { background: var(--panel); padding: 22px 20px; }
+  .point h3 {
+    font-size: 14px; font-weight: 700;
+    font-variation-settings: 'wdth' 86;
+    letter-spacing: .01em;
+  }
+  .point p { margin-top: 8px; font-size: 14px; color: var(--ink-dim); }
+  @media (max-width: 620px) { .points { grid-template-columns: 1fr; } }
+
+  /* ---- guarantee ---- */
+  .guarantee {
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--safe);
+    border-radius: var(--r);
+    background: var(--panel);
+    padding: 24px 22px;
+  }
+  .guarantee pre {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.85;
+    color: var(--safe);
+    margin: 14px 0 0;
+    overflow-x: auto;
+  }
+  .guarantee .after { margin-top: 16px; font-size: 14px; color: var(--ink-dim); max-width: 62ch; }
+
+  /* ---- signup ---- */
+  .signup {
+    margin-top: clamp(64px, 11vw, 116px);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    background: var(--panel);
+    padding: clamp(26px, 5vw, 40px);
+  }
+  .signup h2 { font-size: clamp(20px, 2.8vw, 27px); font-weight: 700; font-variation-settings: 'wdth' 84; }
+  .signup p { margin-top: 12px; color: var(--ink-dim); font-size: 15px; max-width: 56ch; }
+  form { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type=email] {
+    flex: 1 1 260px;
+    font-family: var(--mono); font-size: 14px;
+    color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: var(--r);
+    padding: 12px 14px;
+  }
+  input[type=email]::placeholder { color: var(--ink-faint); }
+  button {
+    font-family: var(--display);
+    font-size: 12px; font-weight: 700;
+    font-variation-settings: 'wdth' 82;
+    letter-spacing: .13em; text-transform: uppercase;
+    color: var(--bg); background: var(--safe);
+    border: none; border-radius: var(--r);
+    padding: 12px 22px; cursor: pointer;
+    transition: filter .15s;
+  }
+  button:hover { filter: brightness(1.1); }
+  .formnote { margin-top: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); min-height: 1.2em; }
+  .formnote.err { color: var(--local); }
+  .formnote.ok { color: var(--safe); }
+
+  footer {
+    margin-top: clamp(56px, 9vw, 96px);
+    padding: 26px 0 44px;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  footer .sp { flex: 1; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <span class="mark">Git Dashboard</span>
+    <span class="sp"></span>
+    <span class="pill">Windows &middot; Mac coming</span>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">Read-only &middot; never goes online</div>
+    <h1>How much of your work exists on <em>one computer</em>?</h1>
+    <p class="lede">
+      Git Dashboard reads every project folder on your machine and lays out, on a single
+      page, what you have saved, what you have pushed, and what would go with the laptop.
+      It only ever reads. It has no commit button and no network access.
+    </p>
+
+    <figure class="shot">
+      <img src="assets/gitdashboard-hero.png" width="1857" height="687"
+           alt="Git Dashboard showing 28 of 30 apps have work only on this computer, with three columns: 366 changed files edited but never committed, 133 saves committed but never pushed, and 623 saves on GitHub.">
+      <figcaption>An unedited scan of the author's own machine.</figcaption>
+    </figure>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">What the scan found</div>
+    <h2>The list underneath that number.</h2>
+    <p class="sub">
+      Every project, sorted so the work most likely to be lost is at the top. This is the
+      part that tends to be a surprise.
+    </p>
+
+    <div class="manifest">
+      <div class="manifest-head">
+        <span class="t">Scan of one developer's desktop</span>
+        <span class="sp"></span>
+        <span class="n">30 projects &middot; 2.1s</span>
+      </div>
+
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th class="num">Saves</th>
+              <th>Where they live</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="verdict">
+        <b>28 of 30 projects</b> held work that existed nowhere else.
+        <b>18</b> had never been connected to GitHub at all.
+        <span class="note">A real scan. Project names changed.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="rail">
+    <div class="eyebrow">The three stations</div>
+    <h2>Work moves left to right. Most people never look.</h2>
+    <p class="sub">
+      Every project sits at one of three stages. The first two exist on exactly one
+      computer &mdash; yours. Git Dashboard shows you which projects are stuck where.
+    </p>
+
+    <div class="stations">
+      <div class="station">
+        <div class="lbl"><span class="dot d-risk"></span> In your folder</div>
+        <div class="txt">Files you have edited or created since your last save. Git calls these uncommitted changes.</div>
+        <div class="move">git commit &rarr;</div>
+      </div>
+      <div class="station">
+        <div class="lbl"><span class="dot d-local"></span> On this PC only</div>
+        <div class="txt">Saves that live in your local repo and have never been sent anywhere. The most commonly missed stage.</div>
+        <div class="move">git push &rarr;</div>
+      </div>
+      <div class="station">
+        <div class="lbl"><span class="dot d-safe"></span> On GitHub</div>
+        <div class="txt">Saves on a server. These are the only ones that survive a dead drive or a stolen laptop.</div>
+        <div class="move">safe</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">What it does</div>
+    <h2>One window. Every project. No setup.</h2>
+
+    <div class="points">
+      <div class="point">
+        <h3>Finds the repos you forgot</h3>
+        <p>It searches inside subfolders, not just the top level. On the scan above that turned up nine repos the author did not know were unbacked-up.</p>
+      </div>
+      <div class="point">
+        <h3>Notices when things change</h3>
+        <p>It watches your folders and updates on its own. Commit or push, and the page corrects itself a moment later.</p>
+      </div>
+      <div class="point">
+        <h3>Waits in the tray</h3>
+        <p>The tray icon turns amber when work is sitting on your machine alone, so you find out without going looking.</p>
+      </div>
+      <div class="point">
+        <h3>Tells you how old the answer is</h3>
+        <p>Counts come from what your computer last learned about GitHub. Each project says when that was, rather than pretending to be live.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">The guarantee</div>
+    <h2>It cannot damage your repos.</h2>
+    <p class="sub">
+      Not "should not" &mdash; there is no code that could. These are every git command in
+      the entire application:
+    </p>
+
+    <div class="guarantee">
+      <div class="eyebrow">Complete list</div>
+<pre>git status --porcelain --branch
+git for-each-ref
+git rev-list --count
+git config --get remote.origin.url</pre>
+      <p class="after">
+        No commit, push, pull, checkout, add, reset or clean anywhere in the codebase, and
+        no network access at all. Every call passes <code>--no-optional-locks</code>, so it
+        will not fight VS Code or GitHub Desktop for a lock. The worst a bug could do is
+        show you a wrong number.
+      </p>
+    </div>
+  </section>
+
+  <section class="signup">
+    <h2>It is not finished yet.</h2>
+    <p>
+      It works, it is in daily use, and it is not something you can buy today. Leave an
+      email address and you will hear once &mdash; when it is ready.
+    </p>
+    <form id="signup">
+      <input type="email" id="email" name="email" placeholder="you@example.com" required aria-label="Email address">
+      <button type="submit">Tell me when it ships</button>
+    </form>
+    <div class="formnote" id="note" role="status"></div>
+  </section>
+
+  <footer>
+    <span>Git Dashboard</span>
+    <span class="sp"></span>
+    <span>Made by Andrew Murphy</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // A real scan, names changed. Ordered the way the app orders it: the
+  // work most likely to be lost, first.
+  var ROWS = [
+    ['Golf Game',        47, 'risk',  'This computer only'],
+    ['Signal Engine',    28, 'risk',  'This computer only'],
+    ['Clinic Records',   13, 'risk',  'This computer only'],
+    ['Terminal Plus',     7, 'risk',  'This computer only'],
+    ['Course Planner',    5, 'risk',  'This computer only'],
+    ['Face Scan',         5, 'risk',  'This computer only'],
+    ['Daily To-Do',       2, 'risk',  'This computer only'],
+    ['Job Board',         1, 'risk',  'This computer only'],
+    ['Travel Companion',  0, 'risk',  'Never saved once'],
+    ['Crossword',       132, 'local', '7 saves not pushed'],
+    ['Tennis Game',      64, 'local', '4 saves not pushed'],
+    ['House Dashboard',  38, 'safe',  'All on GitHub'],
+    ['Reminder App',     21, 'safe',  'All on GitHub']
+  ];
+
+  var LABEL = { risk: 'w-risk', local: 'w-local', safe: 'w-safe' };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  var reduced = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.getElementById('rows').innerHTML = ROWS.map(function (r, i) {
+    // Staggered so the table reads as a scan finding things one by one,
+    // rather than a list that was always there.
+    var delay = reduced ? '' : ' style="animation-delay:' + (i * 55) + 'ms"';
+    return '<tr' + delay + '>'
+         + '<td class="name">' + esc(r[0]) + '</td>'
+         + '<td class="num">' + r[1] + '</td>'
+         + '<td><span class="where ' + LABEL[r[2]] + '">'
+         +   '<span class="dot d-' + r[2] + '"></span>' + esc(r[3])
+         + '</span></td>'
+         + '</tr>';
+  }).join('');
+
+  // ---- email capture --------------------------------------------------
+  // Paste a form endpoint here to start collecting addresses. Formspree
+  // and Buttondown both give you one free in about two minutes. Until
+  // this is set, the form says so rather than silently losing signups.
+  var FORM_ENDPOINT = null;
+
+  var form = document.getElementById('signup');
+  var note = document.getElementById('note');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('email').value.trim();
+    if (!email) return;
+
+    if (!FORM_ENDPOINT) {
+      note.className = 'formnote err';
+      note.textContent = 'The mailing list is not connected yet — nothing was sent.';
+      return;
+    }
+
+    note.className = 'formnote';
+    note.textContent = 'Sending…';
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function (res) {
+      if (!res.ok) throw new Error('status ' + res.status);
+      note.className = 'formnote ok';
+      note.textContent = 'Thank you. You will hear once, when it ships.';
+      form.reset();
+    }).catch(function () {
+      note.className = 'formnote err';
+      note.textContent = 'That did not send. Try again, or email me directly.';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
