@@ -327,6 +327,7 @@
     transition: filter .15s;
   }
   button:hover { filter: brightness(1.1); }
+  .gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
   .formnote { margin-top: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); min-height: 1.2em; }
   .formnote.err { color: var(--local); }
   .formnote.ok { color: var(--safe); }
@@ -517,6 +518,7 @@ git config --get remote.origin.url</pre>
     </p>
     <form id="signup">
       <input type="email" id="email" name="email" placeholder="you@example.com" required aria-label="Email address">
+      <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="gotcha">
       <button type="submit">Tell me when it ships</button>
     </form>
     <div class="formnote" id="note" role="status"></div>
@@ -577,10 +579,12 @@ git config --get remote.origin.url</pre>
   }).join('');
 
   // ---- email capture --------------------------------------------------
-  // Paste a form endpoint here to start collecting addresses. Formspree
-  // and Buttondown both give you one free in about two minutes. Until
-  // this is set, the form says so rather than silently losing signups.
-  var FORM_ENDPOINT = null;
+  // Formspree. The endpoint is public by design — it lives in client-side
+  // code on every site that uses one — so it is not a secret, but it is
+  // spammable. The hidden _gotcha field below is Formspree's honeypot:
+  // real people never fill it, bots usually do, and anything that does
+  // gets discarded.
+  var FORM_ENDPOINT = 'https://formspree.io/f/mppzanqy';
 
   var form = document.getElementById('signup');
   var note = document.getElementById('note');
@@ -602,7 +606,13 @@ git config --get remote.origin.url</pre>
     fetch(FORM_ENDPOINT, {
       method: 'POST',
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify({
+        email: email,
+        // ASCII only. A non-ASCII subject (an em dash) was rejected with a
+        // 400 during testing, so this line stays plain deliberately.
+        _subject: 'Loose Ends signup',
+        _gotcha: document.getElementById('company').value
+      })
     }).then(function (res) {
       if (!res.ok) throw new Error('status ' + res.status);
       note.className = 'formnote ok';
