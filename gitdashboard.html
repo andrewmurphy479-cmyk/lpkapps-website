@@ -244,6 +244,34 @@
   .point p { margin-top: 8px; font-size: 14px; color: var(--ink-dim); }
   @media (max-width: 620px) { .points { grid-template-columns: 1fr; } }
 
+  /* ---- agents ---- */
+  .agents {
+    margin-top: 28px;
+    border-top: 1px solid var(--line-soft);
+    max-width: 68ch;
+  }
+  .agent {
+    display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .agent .who {
+    flex: none; width: 11ch;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: .04em;
+    color: var(--local);
+  }
+  .agent .what { font-size: clamp(15px, 1.9vw, 18px); color: var(--ink); }
+
+  .claim {
+    margin-top: 26px;
+    max-width: 62ch;
+    padding-left: 18px;
+    border-left: 2px solid var(--safe);
+    font-size: 15.5px;
+    color: var(--ink-dim);
+  }
+
   /* ---- guarantee ---- */
   .guarantee {
     margin-top: 28px;
@@ -365,6 +393,37 @@
         <span class="note">A real scan. Project names changed.</span>
       </div>
     </div>
+  </section>
+
+  <section class="block">
+    <div class="eyebrow">Building with AI</div>
+    <h2>Building faster means more projects to keep track of.</h2>
+
+    <div class="agents">
+      <div class="agent">
+        <span class="who">Claude Code</span>
+        <span class="what">finished something at midnight.</span>
+      </div>
+      <div class="agent">
+        <span class="who">Cursor</span>
+        <span class="what">changed another project yesterday.</span>
+      </div>
+      <div class="agent">
+        <span class="who">You</span>
+        <span class="what">have three experiments you have not opened in two weeks.</span>
+      </div>
+    </div>
+
+    <p class="sub">
+      Git Dashboard does not care how the code got there. It shows you which work still
+      exists on only one machine.
+    </p>
+
+    <p class="claim">
+      You do not need to understand git to know you do not want to lose a week of work.
+      If you are shipping a lot of code and the git part is still hazy, this matters more
+      to you than it does to someone who has been pushing to remotes for ten years.
+    </p>
   </section>
 
   <section class="rail">
