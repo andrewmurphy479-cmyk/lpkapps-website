@@ -91,6 +91,16 @@
     font-size: 11px; color: var(--ink-faint);
     border: 1px solid var(--line); border-radius: 999px;
     padding: 4px 12px;
+    text-decoration: none;
+    transition: color .15s, border-color .15s;
+  }
+  a.pill:hover { color: var(--safe); border-color: var(--safe); text-decoration: none; }
+
+  /* Anchor jumps land with breathing room above the heading. Smooth only
+     for people who have not asked for less motion. */
+  #notify { scroll-margin-top: 28px; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
   }
 
   /* ---- hero ---- */
@@ -191,6 +201,16 @@
     color: var(--ink-dim);
   }
   .verdict b { color: var(--ink); font-weight: 700; }
+  .verdict .jump {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--safe);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .verdict .jump:hover { border-bottom-color: var(--safe); text-decoration: none; }
   .verdict .note {
     display: block; margin-top: 5px;
     font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
@@ -350,7 +370,7 @@
     <span class="mark">Loose Ends</span>
     <span class="tagline">Work that only exists on one computer</span>
     <span class="sp"></span>
-    <span class="pill">Windows &middot; Mac coming</span>
+    <a class="pill" href="#notify">Windows &middot; Mac coming</a>
   </div>
 
   <section class="hero">
@@ -401,6 +421,7 @@
         <b>28 of 30 projects</b> held work that existed nowhere else.
         <b>18</b> had never been connected to GitHub at all.
         <span class="note">A real scan. Project names changed.</span>
+        <a class="jump" href="#notify">Tell me when it ships &darr;</a>
       </div>
     </div>
   </section>
@@ -510,7 +531,7 @@ git config --get remote.origin.url</pre>
     </div>
   </section>
 
-  <section class="signup">
+  <section class="signup" id="notify">
     <h2>It is not finished yet.</h2>
     <p>
       It works, it is in daily use, and it is not something you can buy today. Leave an
