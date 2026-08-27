@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Git Dashboard — find the work that only exists on one computer</title>
-<meta name="description" content="Git Dashboard scans every project folder on your machine and shows which work is committed, which is pushed, and which would disappear with the laptop. Read-only. Never touches the network.">
+<title>Loose Ends — find the work that only exists on one computer</title>
+<meta name="description" content="Loose Ends scans every project folder on your machine and shows which work is committed, which is pushed, and which would disappear with the laptop. Read-only. Never touches the network.">
 
-<meta property="og:title" content="Git Dashboard">
+<meta property="og:title" content="Loose Ends">
 <meta property="og:description" content="How much of your work exists on only one computer?">
 <meta property="og:type" content="website">
 
@@ -77,6 +77,14 @@
     font-variation-settings: 'wdth' 80;
     letter-spacing: .17em; text-transform: uppercase;
   }
+  .tagline {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+  }
+  @media (max-width: 620px) { .tagline { display: none; } }
   .top .sp { flex: 1; }
   .pill {
     font-family: var(--mono);
@@ -338,7 +346,8 @@
 <div class="wrap">
 
   <div class="top">
-    <span class="mark">Git Dashboard</span>
+    <span class="mark">Loose Ends</span>
+    <span class="tagline">Work that only exists on one computer</span>
     <span class="sp"></span>
     <span class="pill">Windows &middot; Mac coming</span>
   </div>
@@ -347,14 +356,14 @@
     <div class="eyebrow">Read-only &middot; never goes online</div>
     <h1>How much of your work exists on <em>one computer</em>?</h1>
     <p class="lede">
-      Git Dashboard reads every project folder on your machine and lays out, on a single
+      Loose Ends reads every project folder on your machine and lays out, on a single
       page, what you have saved, what you have pushed, and what would go with the laptop.
       It only ever reads. It has no commit button and no network access.
     </p>
 
     <figure class="shot">
-      <img src="assets/gitdashboard-hero.png" width="1857" height="687"
-           alt="Git Dashboard showing 28 of 30 apps have work only on this computer, with three columns: 366 changed files edited but never committed, 133 saves committed but never pushed, and 623 saves on GitHub.">
+      <img src="assets/looseends-hero.png" width="1857" height="687"
+           alt="Loose Ends showing 28 of 30 apps have work only on this computer, with three columns: 366 changed files edited but never committed, 133 saves committed but never pushed, and 623 saves on GitHub.">
       <figcaption>An unedited scan of the author's own machine.</figcaption>
     </figure>
   </section>
@@ -415,7 +424,7 @@
     </div>
 
     <p class="sub">
-      Git Dashboard does not care how the code got there. It shows you which work still
+      Loose Ends does not care how the code got there. It shows you which work still
       exists on only one machine.
     </p>
 
@@ -431,7 +440,7 @@
     <h2>Work moves left to right. Most people never look.</h2>
     <p class="sub">
       Every project sits at one of three stages. The first two exist on exactly one
-      computer &mdash; yours. Git Dashboard shows you which projects are stuck where.
+      computer &mdash; yours. Loose Ends shows you which projects are stuck where.
     </p>
 
     <div class="stations">
@@ -514,7 +523,7 @@ git config --get remote.origin.url</pre>
   </section>
 
   <footer>
-    <span>Git Dashboard</span>
+    <span>Loose Ends &mdash; work that only exists on one computer</span>
     <span class="sp"></span>
     <span>Made by Andrew Murphy</span>
   </footer>
