@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — and CallSign Check, instant ham radio callsign lookup. Both out now on the App Store, with Blob Tennis and WC INKs on the way.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — CallSign Check, instant ham radio callsign lookup, and Racquet Blob, swipe-to-swing physics tennis. All out now on the App Store, with WC INKs on the way.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -676,6 +676,18 @@
             box-shadow: 0 10px 30px rgba(120, 120, 255, 0.4);
         }
 
+        .app-card[data-color="lime"] .flagship-tagline { color: var(--lime); }
+
+        .app-card[data-color="lime"] .btn-flagship {
+            background: var(--lime);
+            color: #1a2410;
+            box-shadow: 0 6px 22px rgba(214, 235, 79, 0.22);
+        }
+
+        .app-card[data-color="lime"] .btn-flagship:hover {
+            box-shadow: 0 10px 30px rgba(214, 235, 79, 0.34);
+        }
+
         .app-card.flagship > div > p {
             margin-bottom: 2rem;
         }
@@ -751,6 +763,11 @@
             box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(120, 120, 255, 0.16);
         }
 
+        .app-card[data-color="lime"] .flagship-art .shot {
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(214, 235, 79, 0.12);
+        }
+
         .flagship-art .plant {
             position: absolute;
             filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
@@ -778,7 +795,6 @@
 
         /* Ghost card for future apps */
         .ghost-card {
-            grid-column: 1 / -1;
             border-style: dashed;
             border-color: rgba(255, 255, 255, 0.1);
             background: transparent;
@@ -1170,6 +1186,28 @@
                     </div>
                 </article>
 
+                <!-- Racquet Blob — flagship -->
+                <article class="app-card flagship reveal stagger-3" data-color="lime">
+                    <div>
+                        <span class="app-card-tag">Game &middot; Out now on iOS</span>
+                        <div class="flagship-head">
+                            <img src="assets/racquetblob/icon.png" alt="Racquet Blob app icon — a lime tennis-ball blob with two little eyes">
+                            <div>
+                                <h3>Racquet Blob</h3>
+                                <span class="flagship-tagline">Swipe-to-swing physics tennis</span>
+                            </div>
+                        </div>
+                        <p>Tennis where every shot is yours — swipe to swing, time the contact, and the ball goes exactly where physics says it should. Climb the tour against nine blob rivals across twelve venues. Free to try on iPhone.</p>
+                        <div class="flagship-ctas">
+                            <a href="https://apps.apple.com/us/app/racquet-blob/id6792367727" target="_blank" rel="noopener" class="btn-flagship">Download on the App Store <span class="arrow">&#8594;</span></a>
+                            <a href="racquetblob.html" class="btn-learn">Explore Racquet Blob <span>&#8594;</span></a>
+                        </div>
+                    </div>
+                    <div class="flagship-art" aria-hidden="true">
+                        <img class="shot" src="assets/racquetblob/01.jpg" alt="" loading="lazy">
+                    </div>
+                </article>
+
                 <div class="grid-label reveal">In development</div>
 
                 <!-- WC INKs -->
@@ -1183,24 +1221,8 @@
                     <a href="wcinks.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
                 </article>
 
-                <!-- Blob Tennis -->
-                <article class="app-card reveal stagger-2" data-color="lime">
-                    <span class="app-card-tag">Game &middot; In Development</span>
-                    <div class="app-icon" aria-hidden="true">
-                        <svg viewBox="0 0 64 64" fill="none">
-                            <circle cx="32" cy="32" r="26" fill="#D6EB4F"/>
-                            <path d="M6 22 Q32 40 58 22" stroke="#F4FBCB" stroke-width="4" fill="none"/>
-                            <circle cx="25" cy="34" r="3" fill="#24382C"/>
-                            <circle cx="39" cy="34" r="3" fill="#24382C"/>
-                        </svg>
-                    </div>
-                    <h3>Blob Tennis</h3>
-                    <p>A real sport in a squishy body — flick to swing, spin like you mean it, and out-think a tour of blob rivals. Every shot obeys real ball physics.</p>
-                    <a href="blobtennis.html" class="btn-learn">Sneak Peek <span>&#8594;</span></a>
-                </article>
-
                 <!-- Future apps -->
-                <article class="app-card ghost-card reveal stagger-3" data-color="teal" aria-label="More apps in the works">
+                <article class="app-card ghost-card reveal stagger-2" data-color="teal" aria-label="More apps in the works">
                     <div class="plus" aria-hidden="true">+</div>
                     <p>More in the works.<br>The next idea is already sprouting.</p>
                 </article>
@@ -1215,7 +1237,7 @@
                 <h2 class="band-title">Get our apps <span class="gold-text">before anyone else.</span></h2>
                 <p class="band-sub">We're looking for a small group of testers to try early builds on iPhone and iPad. It's free, it takes about five minutes to set up, and you can leave any time.</p>
                 <a class="btn-flagship" href="beta.html">Become a tester <span class="arrow">&#8594;</span></a>
-                <p class="band-note">Root Word, CallSign Check, WC INKs and Blob Tennis.</p>
+                <p class="band-note">Root Word, CallSign Check, Racquet Blob and WC INKs.</p>
             </div>
         </section>
 

@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blob Tennis — Physics-Based Tennis. In Development.</title>
-    <meta name="description" content="Blob Tennis by LPK Apps — a physics-based tennis game with a cast of blob rivals. Flick to swing, spin like you mean it, and climb the tour. In development.">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23EDF2E4'/%3E%3Ccircle cx='32' cy='34' r='20' fill='%23D6EB4F'/%3E%3Cpath d='M12 26 Q32 40 52 26' stroke='%23F4FBCB' stroke-width='3.5' fill='none'/%3E%3Ccircle cx='26' cy='36' r='2.6' fill='%2324382C'/%3E%3Ccircle cx='38' cy='36' r='2.6' fill='%2324382C'/%3E%3C/svg%3E" type="image/svg+xml">
+    <title>Racquet Blob — Swipe-to-Swing Physics Tennis for iPhone</title>
+    <meta name="description" content="Racquet Blob by LPK Apps — tennis where every shot is yours. Swipe to swing, outplay nine blob rivals across twelve venues, and climb the tour. Free to try on the App Store.">
+    <link rel="icon" href="assets/racquetblob/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/racquetblob/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -99,9 +100,11 @@
             text-decoration: none;
         }
 
-        .nav-brand svg {
+        .nav-brand img {
             width: 34px;
             height: 34px;
+            border-radius: 9px;
+            box-shadow: 0 2px 8px rgba(36, 56, 44, 0.16);
         }
 
         .nav-brand span {
@@ -123,6 +126,13 @@
             padding: 0.45rem 1rem;
             border-radius: 100px;
             white-space: nowrap;
+            text-decoration: none;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .nav-status:hover {
+            background: rgba(214, 235, 79, 0.5);
+            border-color: var(--ball-shade);
         }
 
         /* ========================
@@ -377,6 +387,56 @@
             box-shadow: 0 14px 36px rgba(184, 206, 51, 0.6);
         }
 
+        .store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.7rem 1.6rem 0.7rem 1.3rem;
+            border-radius: 14px;
+            background: var(--ink);
+            color: #fff;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            box-shadow: 0 8px 26px rgba(36, 56, 44, 0.28);
+        }
+
+        .store-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 36px rgba(36, 56, 44, 0.36);
+        }
+
+        .store-badge svg { width: 24px; height: 24px; flex-shrink: 0; }
+
+        .store-badge .badge-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.15;
+            text-align: left;
+        }
+
+        .store-badge .badge-text small {
+            font-size: 0.66rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            opacity: 0.8;
+        }
+
+        .store-badge .badge-text strong {
+            font-family: var(--display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .store-fine {
+            margin-top: 1.1rem;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            opacity: 0;
+            animation: heroRise 0.7s ease forwards 3s;
+        }
+
         .btn-ghost {
             display: inline-flex;
             align-items: center;
@@ -512,7 +572,7 @@
            ======================== */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.4rem;
             margin-top: 3rem;
         }
@@ -571,6 +631,40 @@
             padding: 0.3rem 0.8rem;
             border-radius: 100px;
         }
+
+        /* ========================
+           SCREENS — the App Store set
+           ======================== */
+        .shot-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2.6rem;
+            overflow-x: auto;
+            padding: 0.75rem 0.25rem 1.75rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+        }
+
+        .shot-row::-webkit-scrollbar { height: 8px; }
+        .shot-row::-webkit-scrollbar-track { background: transparent; }
+        .shot-row::-webkit-scrollbar-thumb {
+            background: var(--line);
+            border-radius: 100px;
+        }
+
+        .shot-row img {
+            scroll-snap-align: start;
+            flex: 0 0 auto;
+            width: 200px;
+            height: auto;
+            aspect-ratio: 480 / 1042;
+            border-radius: 18px;
+            box-shadow: 0 18px 38px rgba(36, 56, 44, 0.2);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .shot-row img:hover { transform: translateY(-6px); }
 
         /* ========================
            RIVALS — the scouting bench
@@ -685,8 +779,8 @@
 
         .venue-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.4rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
             margin-top: 3rem;
         }
 
@@ -705,7 +799,7 @@
 
         .venue-sky {
             position: relative;
-            height: 128px;
+            height: 96px;
             background: var(--sky);
             overflow: hidden;
         }
@@ -715,7 +809,7 @@
             content: '';
             position: absolute;
             left: 0; right: 0; bottom: 0;
-            height: 34px;
+            height: 26px;
             background: var(--surf);
             border-top: 3px solid rgba(255, 255, 255, 0.75);
         }
@@ -723,32 +817,33 @@
         /* sun / moon */
         .venue-sky .orb {
             position: absolute;
-            top: 22px;
-            right: 26px;
-            width: 34px;
-            height: 34px;
+            top: 16px;
+            right: 20px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: var(--orb);
             box-shadow: 0 0 24px 6px var(--orb-glow);
         }
 
-        .venue-body { padding: 1.5rem 1.5rem 1.6rem; }
+        .venue-body { padding: 1.1rem 1.2rem 1.25rem; }
 
         .venue-body h4 {
             font-family: var(--display);
             font-weight: 600;
-            font-size: 1.12rem;
-            margin-bottom: 0.45rem;
+            font-size: 1.02rem;
+            margin-bottom: 0.3rem;
         }
 
         .venue-body p {
             color: var(--ink-soft);
-            font-size: 0.88rem;
+            font-size: 0.82rem;
+            line-height: 1.5;
         }
 
         .venue-body .chip {
             display: inline-block;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             font-size: 0.66rem;
             font-weight: 700;
             letter-spacing: 0.12em;
@@ -757,6 +852,12 @@
             border: 1px solid var(--line);
             padding: 0.28rem 0.75rem;
             border-radius: 100px;
+        }
+
+        .venue-body .chip-full {
+            color: #6a7c2a;
+            border-color: rgba(184, 206, 51, 0.7);
+            background: rgba(214, 235, 79, 0.22);
         }
 
         /* ========================
@@ -853,7 +954,9 @@
 
         .footer-links {
             display: flex;
-            gap: 1.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem 1.75rem;
             list-style: none;
         }
 
@@ -874,14 +977,27 @@
         /* ========================
            RESPONSIVE
            ======================== */
+        @media (max-width: 980px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .venue-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
         @media (max-width: 820px) {
             .features-grid { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; }
-            .venue-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+            .venue-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 520px) {
+            .venue-grid { gap: 0.8rem; }
+            .venue-sky { height: 72px; }
+            .venue-body { padding: 0.9rem 0.9rem 1rem; }
+            .shot-row img { width: 168px; }
         }
 
         @media (max-width: 700px) {
             nav { padding: 0.75rem 1rem; }
             .nav-brand span { display: none; }
+            .hero-tagline { letter-spacing: 0.22em; padding-left: 0.22em; }
             .footer-inner { flex-direction: column; text-align: center; }
             .stage { height: 160px; }
             .ball-drop, .stage .shadow { transform-origin: center; }
@@ -894,7 +1010,7 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
-            .hero-title .letter, .hero-tagline, .hero-sub, .hero-actions, .scroll-hint { opacity: 1; transform: none; }
+            .hero-title .letter, .hero-tagline, .hero-sub, .hero-actions, .store-fine, .scroll-hint { opacity: 1; transform: none; }
             .blob .face { opacity: 1; }
             .stage .shadow { opacity: 0.13; }
             .reveal { opacity: 1; transform: none; }
@@ -907,37 +1023,33 @@
     <nav>
         <a href="index.html" class="nav-back"><span class="arr">&#8592;</span> LPK Apps</a>
         <a href="#" class="nav-brand">
-            <svg viewBox="0 0 64 64" aria-hidden="true">
-                <circle cx="32" cy="32" r="26" fill="#D6EB4F"/>
-                <path d="M6 22 Q32 40 58 22" stroke="#F4FBCB" stroke-width="4" fill="none"/>
-                <circle cx="25" cy="34" r="3" fill="#24382C"/>
-                <circle cx="39" cy="34" r="3" fill="#24382C"/>
-            </svg>
-            <span>Blob Tennis</span>
+            <img src="assets/racquetblob/icon.png" alt="" aria-hidden="true">
+            <span>Racquet Blob</span>
         </a>
-        <span class="nav-status">In Development</span>
+        <a href="https://apps.apple.com/us/app/racquet-blob/id6792367727" target="_blank" rel="noopener" class="nav-status">Out now on iOS</a>
     </nav>
 
     <main>
         <!-- ====== HERO — the game's splash screen, recreated ====== -->
         <header class="hero">
-            <div class="hero-title" aria-label="Blob Tennis">
-                <div class="word" aria-hidden="true">
-                    <span class="letter" style="animation-delay:0.78s">B</span>
-                    <span class="letter" style="animation-delay:0.84s">L</span>
-                    <span class="letter" style="animation-delay:0.90s">O</span>
-                    <span class="letter" style="animation-delay:0.96s">B</span>
-                </div>
-                <div class="word" aria-hidden="true">
-                    <span class="letter" style="animation-delay:1.50s">T</span>
-                    <span class="letter" style="animation-delay:1.55s">E</span>
-                    <span class="letter" style="animation-delay:1.60s">N</span>
-                    <span class="letter" style="animation-delay:1.65s">N</span>
-                    <span class="letter" style="animation-delay:1.70s">I</span>
-                    <span class="letter" style="animation-delay:1.75s">S</span>
-                </div>
-            </div>
-            <p class="hero-tagline">Physics-Based Tennis</p>
+            <h1 class="hero-title" aria-label="Racquet Blob">
+                <span class="word" aria-hidden="true">
+                    <span class="letter" style="animation-delay:0.78s">R</span>
+                    <span class="letter" style="animation-delay:0.83s">A</span>
+                    <span class="letter" style="animation-delay:0.88s">C</span>
+                    <span class="letter" style="animation-delay:0.93s">Q</span>
+                    <span class="letter" style="animation-delay:0.98s">U</span>
+                    <span class="letter" style="animation-delay:1.03s">E</span>
+                    <span class="letter" style="animation-delay:1.08s">T</span>
+                </span>
+                <span class="word" aria-hidden="true">
+                    <span class="letter" style="animation-delay:1.50s">B</span>
+                    <span class="letter" style="animation-delay:1.56s">L</span>
+                    <span class="letter" style="animation-delay:1.62s">O</span>
+                    <span class="letter" style="animation-delay:1.68s">B</span>
+                </span>
+            </h1>
+            <p class="hero-tagline">Swipe-to-Swing Physics Tennis</p>
 
             <!-- Bounce stage — same beats as the app's splash -->
             <div class="stage" aria-hidden="true">
@@ -955,11 +1067,20 @@
                 </div>
             </div>
 
-            <p class="hero-sub">A real sport in a squishy body. Flick to swing, spin like you mean it, and out-think a tour of blob rivals — <strong>every shot obeys real ball physics.</strong></p>
+            <p class="hero-sub">Tennis where every shot is yours. No auto-aim, no tap-to-hit — you swipe to swing, time the contact, and <strong>the ball goes exactly where physics says it should.</strong></p>
             <div class="hero-actions">
-                <a href="mailto:lpkappsstudio@gmail.com?subject=Notify%20me%20about%20Blob%20Tennis" class="btn-gold">Get notified at launch</a>
-                <a href="#game" class="btn-ghost">See what's coming &#8595;</a>
+                <a href="https://apps.apple.com/us/app/racquet-blob/id6792367727" target="_blank" rel="noopener" class="store-badge" aria-label="Download Racquet Blob on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
+                <a href="#game" class="btn-ghost">See the game &#8595;</a>
             </div>
+            <p class="store-fine">Free to try on iPhone &middot; one-time unlock for the full tour</p>
             <div class="scroll-hint" aria-hidden="true">
                 <span>Scroll</span>
                 <div class="line"></div>
@@ -972,7 +1093,7 @@
                 <div class="reveal" style="text-align:center">
                     <span class="sec-label">The Game</span>
                     <h2 class="sec-title">Cute on the outside.<br>Tennis to the bone.</h2>
-                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">No power-up buttons, no energy meters. Just the sport — served by blobs.</p>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">No ads, no energy timers, no loot boxes. Just the sport — served by blobs.</p>
                 </div>
 
                 <div class="features-grid">
@@ -984,7 +1105,7 @@
                             </svg>
                         </div>
                         <h3>Honest physics</h3>
-                        <p>Topspin dips, slice skids, kick serves jump. Every bounce comes out of a real simulation — so winners are earned, never gifted.</p>
+                        <p>Topspin dips, slice skids, lobs float over a rushing net player. Every bounce comes out of a real simulation — so winners are earned, never gifted.</p>
                         <span class="tag">The whole point</span>
                     </article>
 
@@ -996,9 +1117,9 @@
                                 <circle cx="7.5" cy="20" r="2.6" fill="rgba(214,235,79,0.6)" stroke="#6a7c2a" stroke-width="1.5"/>
                             </svg>
                         </div>
-                        <h3>One input language</h3>
-                        <p>Flick to swing, tap for a drop shot, hold for the lob. The whole shot palette lives in your thumb — no buttons, ever.</p>
-                        <span class="tag">Easy to learn</span>
+                        <h3>Swing it yourself</h3>
+                        <p>Your swipe is your shot. Drive it, carve a slice, tap to drop it dead over the net, punch volleys, put away overheads, and dive for the ball on the run. You even aim and time your own serve.</p>
+                        <span class="tag">Swipe to swing</span>
                     </article>
 
                     <article class="feature-card reveal d3">
@@ -1008,22 +1129,68 @@
                             </svg>
                         </div>
                         <h3>A tour of rivals</h3>
-                        <p>Climb the career ladder against named rivals, each with a game plan and a weakness worth scouting. Beat the Legend, wear her shades.</p>
+                        <p>Climb the Season Tour from the Club Open to the Tour Finals, and the world ranking from #250 to #1. Every season your rivals come back having studied you.</p>
                         <span class="tag">Career mode</span>
                     </article>
 
-                    <article class="feature-card reveal d4">
+                    <article class="feature-card reveal d1">
                         <div class="feature-icon">
                             <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
-                                <rect x="5" y="9" width="16" height="12" rx="2.5" stroke="#6a7c2a" stroke-width="1.7" fill="rgba(214,235,79,0.4)"/>
-                                <path d="M9 9V7a4 4 0 018 0v2" stroke="#6a7c2a" stroke-width="1.7" fill="none"/>
-                                <circle cx="13" cy="15" r="2" fill="#6a7c2a"/>
+                                <rect x="4.5" y="6" width="17" height="15" rx="3" stroke="#6a7c2a" stroke-width="1.7" fill="rgba(214,235,79,0.4)"/>
+                                <path d="M4.5 11h17M9 4v4M17 4v4" stroke="#6a7c2a" stroke-width="1.7" stroke-linecap="round"/>
+                                <circle cx="13" cy="16" r="1.8" fill="#6a7c2a"/>
                             </svg>
                         </div>
-                        <h3>Earn everything</h3>
-                        <p>Outfits, rackets, ball trails, victory confetti — a locker full of cosmetics unlocked by playing. Zero pay-to-win, forever.</p>
-                        <span class="tag">No paywalls</span>
+                        <h3>Something every day</h3>
+                        <p>A new Daily Match every day with a win streak to protect, five medal drills for your serve, return, rally, overhead and drop shot, and 45 achievements for the shots worth bragging about.</p>
+                        <span class="tag">Daily Match</span>
                     </article>
+
+                    <article class="feature-card reveal d2">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <path d="M5 15c0-5 3.6-8.5 8-8.5s8 3.5 8 8.5" stroke="#6a7c2a" stroke-width="1.7" fill="rgba(214,235,79,0.4)"/>
+                                <path d="M3 15.5h20" stroke="#6a7c2a" stroke-width="1.8" stroke-linecap="round"/>
+                                <circle cx="13" cy="5" r="1.6" fill="#6a7c2a"/>
+                                <path d="M8 19.5h10" stroke="#6a7c2a" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3>Dress your blob</h3>
+                        <p>Earn more than 100 hats, capes, rackets, outfits and victory celebrations just by playing. Optional cosmetic collections are there if you want even more.</p>
+                        <span class="tag">Earned by playing</span>
+                    </article>
+
+                    <article class="feature-card reveal d3">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                                <rect x="7.5" y="3" width="11" height="20" rx="2.6" stroke="#6a7c2a" stroke-width="1.7" fill="rgba(214,235,79,0.4)"/>
+                                <path d="M11.5 19.5h3" stroke="#6a7c2a" stroke-width="1.7" stroke-linecap="round"/>
+                                <path d="M11.5 9.5v4l3.5-2z" fill="#6a7c2a"/>
+                            </svg>
+                        </div>
+                        <h3>Made for a phone</h3>
+                        <p>Short sets that fit a coffee break, and any match you put down picks up right where you left it. Hit a winner worth seeing again? Share the replay as a clip.</p>
+                        <span class="tag">Pick up &amp; play</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SCREENS ====== -->
+        <section class="section" style="padding-top: 1rem">
+            <div class="wrap">
+                <div class="reveal">
+                    <span class="sec-label">On the App Store</span>
+                    <h2 class="sec-title">See it in play.</h2>
+                    <p class="sec-copy">Clay courts to rooftops, the Season Tour, and the Daily Match — straight from the store listing.</p>
+                </div>
+
+                <div class="shot-row reveal d1">
+                    <img src="assets/racquetblob/01.jpg" alt="Tennis with a twist — a blob mid-rally on a clay court, swipe controls on screen" loading="lazy">
+                    <img src="assets/racquetblob/02.jpg" alt="Your tennis career starts here — the Season Tour map after winning the Club Open" loading="lazy">
+                    <img src="assets/racquetblob/03.jpg" alt="Big rallies, epic courts — a floodlit rooftop court beneath a city skyline" loading="lazy">
+                    <img src="assets/racquetblob/04.jpg" alt="Master shots, unlock rewards — a match results card with five new achievements" loading="lazy">
+                    <img src="assets/racquetblob/05.jpg" alt="Daily challenge, one shot — the Daily Match card with a ten-day win streak" loading="lazy">
                 </div>
             </div>
         </section>
@@ -1036,7 +1203,7 @@
                 <div class="reveal">
                     <span class="sec-label">Scouting Reports</span>
                     <h2 class="sec-title">Know your enemy.</h2>
-                    <p class="sec-copy">Nine rivals stand between you and the title. Every one has a plan — and every plan has a hole. Straight from the in-game scouting cards.</p>
+                    <p class="sec-copy">Nine rivals stand between you and the title. Every one has a habit — and every habit can be exploited. Straight from the in-game scouting cards.</p>
                 </div>
 
                 <div class="rival-row reveal d1">
@@ -1056,13 +1223,13 @@
                         <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
                         <h4>Cal</h4>
                         <span class="epithet">The Cannon</span>
-                        <p class="scout">First serve like a freight train, second serve like a gift. Block the first, feast on the second.</p>
+                        <p class="scout">First serve like a freight train, second serve like a gift. Block the first back, feast on the second.</p>
                     </article>
                     <article class="rival-card" style="--b:#a8c4d8; --v:#2a6a8a">
                         <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
                         <h4>Dash</h4>
                         <span class="epithet">The Retriever</span>
-                        <p class="scout">Fastest feet in the city, slices that stay shin-high. Stretch him corner to corner.</p>
+                        <p class="scout">Fastest feet in the city, slices that stay shin-high. Stretch him corner to corner — he breaks before he misses.</p>
                     </article>
                     <article class="rival-card" style="--b:#ccc0e4; --v:#7a4aa8">
                         <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
@@ -1086,13 +1253,13 @@
                         <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
                         <h4>Boom</h4>
                         <span class="epithet">The Ace Machine</span>
-                        <p class="scout">Biggest serve on tour and a hammer behind it. The second serve is your window.</p>
+                        <p class="scout">Biggest serve on tour and a hammer behind it. Get the return down at his feet — the second serve is your window.</p>
                     </article>
                     <article class="rival-card" style="--b:#e6e6ee; --v:#20202e">
                         <div class="rblob" aria-hidden="true"><span class="visor"></span><span class="eyes"></span></div>
                         <h4>Nova</h4>
                         <span class="epithet">The Legend</span>
-                        <p class="scout">No weakness but one. Everything you have learned, all at once.</p>
+                        <p class="scout">No weakness but one: camp the baseline and she will drop you. Everything you have learned, all at once.</p>
                     </article>
                 </div>
             </div>
@@ -1103,39 +1270,107 @@
             <div class="wrap">
                 <div class="reveal" style="text-align:center">
                     <span class="sec-label">The Tour</span>
-                    <h2 class="sec-title">Three stages. Three surfaces.</h2>
-                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">Clay slows the ball and rewards spin, grass keeps it low and mean, hard court plays it straight. The venue changes how the sport feels — not just how it looks.</p>
+                    <h2 class="sec-title">Twelve venues. Clay, grass and hard court.</h2>
+                    <p class="sec-copy" style="margin-left:auto; margin-right:auto">Six are free from the first serve. The full game opens up the other six — from blue-hour snow to a rooftop beneath a storm.</p>
                 </div>
 
                 <div class="venue-grid">
+                    <!-- free six -->
                     <article class="venue-card reveal d1">
-                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #bfe0f2, #dceec9); --surf: #c8724c; --orb: #ffe9a8; --orb-glow: rgba(255, 233, 168, 0.7)" aria-hidden="true">
-                            <div class="orb"></div>
-                        </div>
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #cfe2f6, #dfe5c2); --surf: #6f9a52; --orb: #ffeec0; --orb-glow: rgba(255, 238, 192, 0.7)" aria-hidden="true"><div class="orb"></div></div>
                         <div class="venue-body">
-                            <h4>The Garden Club</h4>
-                            <p>Hedges, parasols and a polite crowd on the benches. Where the tour begins — and where the coach teaches you the game.</p>
-                            <span class="chip">Clay &middot; Grass</span>
+                            <h4>Garden Club</h4>
+                            <p>Hedges and a polite crowd. Where the coach teaches you the game.</p>
+                            <span class="chip">Free</span>
                         </div>
                     </article>
                     <article class="venue-card reveal d2">
-                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #10182c, #232f52); --surf: #3d5a43; --orb: #e8ecf4; --orb-glow: rgba(232, 236, 244, 0.5)" aria-hidden="true">
-                            <div class="orb"></div>
-                        </div>
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #cfe0f0, #e6d3b4); --surf: #c8724c; --orb: #fff0c8; --orb-glow: rgba(255, 240, 200, 0.7)" aria-hidden="true"><div class="orb"></div></div>
                         <div class="venue-body">
-                            <h4>The Night Show Court</h4>
-                            <p>Five rows deep under the floodlights, stars overhead. The semifinal stage, where the crowd starts to mean it.</p>
-                            <span class="chip">Under the lights</span>
+                            <h4>Terracotta Court</h4>
+                            <p>Red clay on sun-warmed stone. Slow, high and built for spin.</p>
+                            <span class="chip">Free</span>
                         </div>
                     </article>
                     <article class="venue-card reveal d3">
-                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #f7c86e, #e8875a 55%, #8a4a6e); --surf: #4a7ab0; --orb: #fff3c4; --orb-glow: rgba(255, 243, 196, 0.8)" aria-hidden="true">
-                            <div class="orb"></div>
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #d2e2f0, #dde6da); --surf: #5e8a4a; --orb: #fff6e2; --orb-glow: rgba(255, 246, 226, 0.7)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>The Lawns</h4>
+                            <p>The championship grass. The ball stays low and quick.</p>
+                            <span class="chip">Free</span>
                         </div>
+                    </article>
+                    <article class="venue-card reveal d4">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #c2e6f6, #d8ecf2); --surf: #48788c; --orb: #fff9e8; --orb-glow: rgba(255, 249, 232, 0.75)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>Coast Open</h4>
+                            <p>Sea air, bright sky, and a court by the water.</p>
+                            <span class="chip">Free</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d1">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #0b1322, #2c3a55); --surf: #3d5a43; --orb: #eaf2ff; --orb-glow: rgba(234, 242, 255, 0.5)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>Night Floodlight</h4>
+                            <p>Under the lights with the stars overhead.</p>
+                            <span class="chip">Free</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d2">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #f7c86e, #e8875a 55%, #8a4a6e); --surf: #4a7ab0; --orb: #fff3c4; --orb-glow: rgba(255, 243, 196, 0.8)" aria-hidden="true"><div class="orb"></div></div>
                         <div class="venue-body">
                             <h4>Sunset Center Court</h4>
-                            <p>The LED scoreboard, the roaring stands, the golden hour. Only one match is played here — the final against the Legend.</p>
-                            <span class="chip">Hard court</span>
+                            <p>The flagship hard court, roaring stands, golden hour.</p>
+                            <span class="chip">Free</span>
+                        </div>
+                    </article>
+                    <!-- full game six -->
+                    <article class="venue-card reveal d3">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #8ea6cc, #ccd8e6); --surf: #e6ecf2; --orb: #ffd9a8; --orb-glow: rgba(255, 217, 168, 0.7)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>Alpine Lodge</h4>
+                            <p>A mountain court in blue-hour snow.</p>
+                            <span class="chip chip-full">Full game</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d4">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #1c1830, #3a3050); --surf: #f2eee4; --orb: #f2eaff; --orb-glow: rgba(168, 140, 230, 0.6)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>The Ink Well</h4>
+                            <p>An arena made of ink and paper.</p>
+                            <span class="chip chip-full">Full game</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d1">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #68749a, #5c4632); --surf: #a87a48; --orb: #ffce8e; --orb-glow: rgba(255, 206, 142, 0.7)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>Heartwood</h4>
+                            <p>A timber arena under a dusk sky.</p>
+                            <span class="chip chip-full">Full game</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d2">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #7d6a9a, #c9877a 70%, #ffbe86); --surf: #3a4866; --orb: #ffbe86; --orb-glow: rgba(255, 190, 134, 0.8)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>The Regatta</h4>
+                            <p>Tennis by the water at sundown.</p>
+                            <span class="chip chip-full">Full game</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d3">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #f0c5a4, #8a6a78); --surf: #587a4c; --orb: #ffd9ae; --orb-glow: rgba(255, 217, 174, 0.75)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>The Belvedere</h4>
+                            <p>A court on a cliff above the sea.</p>
+                            <span class="chip chip-full">Full game</span>
+                        </div>
+                    </article>
+                    <article class="venue-card reveal d4">
+                        <div class="venue-sky" style="--sky: linear-gradient(180deg, #3e3a58, #6a6a92 60%, #5c5272); --surf: #3a4438; --orb: #ffc98e; --orb-glow: rgba(255, 201, 142, 0.6)" aria-hidden="true"><div class="orb"></div></div>
+                        <div class="venue-body">
+                            <h4>The Spire</h4>
+                            <p>A rooftop court beneath a storm.</p>
+                            <span class="chip chip-full">Full game</span>
                         </div>
                     </article>
                 </div>
@@ -1145,24 +1380,32 @@
         <!-- ====== CTA ====== -->
         <section class="cta-section">
             <div class="cta-blob" aria-hidden="true"><span class="eyes"></span></div>
-            <h2 class="sec-title reveal">First serve is coming.</h2>
-            <p class="sec-copy reveal d1">Blob Tennis is in active development. Want to be courtside on day one? Get on the list and we'll call the match the moment it drops.</p>
+            <h2 class="sec-title reveal">Game, set, download.</h2>
+            <p class="sec-copy reveal d1">The tutorial, the whole Club Open, the Daily Match and Training at six venues are free. One purchase unlocks the rest of the career, every season after it, and six more venues.</p>
             <div class="cta-actions reveal d2">
-                <a href="mailto:lpkappsstudio@gmail.com?subject=Notify%20me%20about%20Blob%20Tennis" class="btn-gold">Get notified at launch</a>
-                <a href="rootword.html" class="btn-ghost">Meanwhile, try Root Word &#8594;</a>
+                <a href="https://apps.apple.com/us/app/racquet-blob/id6792367727" target="_blank" rel="noopener" class="store-badge" aria-label="Download Racquet Blob on the App Store">
+                    <svg viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                    </svg>
+                    <span class="badge-text">
+                        <small>Download on the</small>
+                        <strong>App Store</strong>
+                    </span>
+                </a>
+                <a href="rootword.html" class="btn-ghost">Also from us: Root Word &#8594;</a>
             </div>
-            <p class="cta-note reveal d3">Want it even sooner? <a href="beta.html?app=blobtennis">Join the beta tester list &#8594;</a></p>
+            <p class="cta-note reveal d3">Want new courts and features before everyone else? <a href="beta.html?app=racquetblob">Join the beta tester list &#8594;</a></p>
         </section>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="footer-inner">
-            <span class="footer-brand">Blob Tennis</span>
+            <span class="footer-brand">Racquet Blob</span>
             <ul class="footer-links">
                 <li><a href="index.html">LPK Apps</a></li>
-                <li><a href="rootword.html">Root Word</a></li>
-                <li><a href="wcinks.html">WC INKs</a></li>
+                <li><a href="https://andrewmurphy479-cmyk.github.io/racquet-blob-privacy/support.html" target="_blank" rel="noopener">Support</a></li>
+                <li><a href="https://andrewmurphy479-cmyk.github.io/racquet-blob-privacy/" target="_blank" rel="noopener">Privacy</a></li>
                 <li><a href="beta.html">Become a tester</a></li>
                 <li><a href="mailto:lpkappsstudio@gmail.com">Contact</a></li>
             </ul>
