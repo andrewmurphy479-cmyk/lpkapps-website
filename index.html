@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — CallSign Check, instant ham radio callsign lookup, and Racquet Blob, swipe-to-swing physics tennis. All out now on the App Store, with WC INKs on the way.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — CallSign Check, instant ham radio callsign lookup, and Racquet Blob, swipe-to-swing physics tennis. All out now on the App Store, with WC INKs on the way. Plus Where Is Mama Murphy, a family RV travel blog with a map that grows as the road trip goes.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,6 +35,8 @@
             --violet-soft: rgba(120, 120, 255, 0.12);
             --lime: #d6eb4f;
             --lime-soft: rgba(214, 235, 79, 0.12);
+            --clay: #e08059;
+            --clay-soft: rgba(224, 128, 89, 0.12);
 
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -466,6 +468,9 @@
         .app-card[data-color="lime"]::before {
             background: radial-gradient(ellipse at 20% 20%, var(--lime-soft), transparent 65%);
         }
+        .app-card[data-color="clay"]::before {
+            background: radial-gradient(ellipse at 20% 20%, var(--clay-soft), transparent 65%);
+        }
 
         .app-card:hover {
             transform: translateY(-6px);
@@ -491,6 +496,10 @@
         .app-card[data-color="lime"]:hover {
             box-shadow: 0 20px 60px -15px rgba(214, 235, 79, 0.15),
                         0 0 0 1px rgba(214, 235, 79, 0.08);
+        }
+        .app-card[data-color="clay"]:hover {
+            box-shadow: 0 20px 60px -15px rgba(224, 128, 89, 0.15),
+                        0 0 0 1px rgba(224, 128, 89, 0.08);
         }
 
         .app-card:hover::before {
@@ -527,6 +536,10 @@
         .app-card[data-color="lime"] .app-card-tag {
             color: var(--lime);
             background: var(--lime-soft);
+        }
+        .app-card[data-color="clay"] .app-card-tag {
+            color: var(--clay);
+            background: var(--clay-soft);
         }
 
         .app-icon {
@@ -620,6 +633,7 @@
         .app-card[data-color="teal"] .btn-learn { color: var(--teal); }
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
         .app-card[data-color="lime"] .btn-learn { color: var(--lime); }
+        .app-card[data-color="clay"] .btn-learn { color: var(--clay); }
 
         /* ========================
            FLAGSHIP CARD (Root Word)
@@ -655,6 +669,7 @@
         .flagship-head h3 {
             margin-bottom: 0.2rem;
             font-size: 1.8rem;
+            line-height: 1.15;
         }
 
         .flagship-tagline {
@@ -686,6 +701,18 @@
 
         .app-card[data-color="lime"] .btn-flagship:hover {
             box-shadow: 0 10px 30px rgba(214, 235, 79, 0.34);
+        }
+
+        .app-card[data-color="clay"] .flagship-tagline { color: var(--clay); }
+
+        .app-card[data-color="clay"] .btn-flagship {
+            background: var(--clay);
+            color: #241c15;
+            box-shadow: 0 6px 22px rgba(224, 128, 89, 0.28);
+        }
+
+        .app-card[data-color="clay"] .btn-flagship:hover {
+            box-shadow: 0 10px 30px rgba(224, 128, 89, 0.4);
         }
 
         .app-card.flagship > div > p {
@@ -766,6 +793,10 @@
         .app-card[data-color="lime"] .flagship-art .shot {
             border: 1px solid rgba(255, 255, 255, 0.07);
             box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(214, 235, 79, 0.12);
+        }
+
+        .app-card[data-color="clay"] .flagship-art .shot {
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(224, 128, 89, 0.12);
         }
 
         .flagship-art .plant {
@@ -1205,6 +1236,28 @@
                     </div>
                     <div class="flagship-art" aria-hidden="true">
                         <img class="shot" src="assets/racquetblob/01.jpg" alt="" loading="lazy">
+                    </div>
+                </article>
+
+                <!-- Where Is Mama Murphy — flagship (web app) -->
+                <article class="app-card flagship reveal stagger-4" data-color="clay">
+                    <div>
+                        <span class="app-card-tag">Web app &middot; Live now</span>
+                        <div class="flagship-head">
+                            <img src="assets/mamamurphy/icon.svg" alt="Where Is Mama Murphy icon — a terracotta RV outline on cream">
+                            <div>
+                                <h3>Where Is Mama Murphy</h3>
+                                <span class="flagship-tagline">An RV road trip, mapped as it happens</span>
+                            </div>
+                        </div>
+                        <p>A family travel blog with a map that keeps itself current. It only ever shows where she's been and where she is right now, so the route grows behind her as she drives. Journal entries and a photo of the week, all posted from her phone.</p>
+                        <div class="flagship-ctas">
+                            <a href="https://www.whereismamamurphy.com" target="_blank" rel="noopener" class="btn-flagship">Visit the site <span class="arrow">&#8594;</span></a>
+                            <a href="https://www.whereismamamurphy.com/map/" target="_blank" rel="noopener" class="btn-learn">See the route <span>&#8594;</span></a>
+                        </div>
+                    </div>
+                    <div class="flagship-art" aria-hidden="true">
+                        <img class="shot" src="assets/mamamurphy/shot.jpg" alt="" loading="lazy">
                     </div>
                 </article>
 
