@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LPK Apps — Digital Experiences, Beautifully Crafted</title>
-    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — CallSign Check, instant ham radio callsign lookup, and Racquet Blob, swipe-to-swing physics tennis. All out now on the App Store, with WC INKs on the way. Plus Where Is Mama Murphy, a family RV travel blog with a map that grows as the road trip goes.">
+    <meta name="description" content="LPK Apps is an independent app studio. Home of Root Word — cozy word puzzles that plant real trees — CallSign Check, instant ham radio callsign lookup, and Racquet Blob, swipe-to-swing physics tennis. All out now on the App Store, with the Riffology guitar riff generator and WC INKs on the way. Plus Where Is Mama Murphy, a family RV travel blog with a map that grows as the road trip goes.">
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +37,8 @@
             --lime-soft: rgba(214, 235, 79, 0.12);
             --clay: #e08059;
             --clay-soft: rgba(224, 128, 89, 0.12);
+            --butter: #f5d76c;
+            --butter-soft: rgba(245, 215, 108, 0.12);
 
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -471,6 +473,9 @@
         .app-card[data-color="clay"]::before {
             background: radial-gradient(ellipse at 20% 20%, var(--clay-soft), transparent 65%);
         }
+        .app-card[data-color="butter"]::before {
+            background: radial-gradient(ellipse at 20% 20%, var(--butter-soft), transparent 65%);
+        }
 
         .app-card:hover {
             transform: translateY(-6px);
@@ -500,6 +505,10 @@
         .app-card[data-color="clay"]:hover {
             box-shadow: 0 20px 60px -15px rgba(224, 128, 89, 0.15),
                         0 0 0 1px rgba(224, 128, 89, 0.08);
+        }
+        .app-card[data-color="butter"]:hover {
+            box-shadow: 0 20px 60px -15px rgba(245, 215, 108, 0.15),
+                        0 0 0 1px rgba(245, 215, 108, 0.08);
         }
 
         .app-card:hover::before {
@@ -540,6 +549,10 @@
         .app-card[data-color="clay"] .app-card-tag {
             color: var(--clay);
             background: var(--clay-soft);
+        }
+        .app-card[data-color="butter"] .app-card-tag {
+            color: var(--butter);
+            background: var(--butter-soft);
         }
 
         .app-icon {
@@ -634,6 +647,7 @@
         .app-card[data-color="violet"] .btn-learn { color: var(--violet); }
         .app-card[data-color="lime"] .btn-learn { color: var(--lime); }
         .app-card[data-color="clay"] .btn-learn { color: var(--clay); }
+        .app-card[data-color="butter"] .btn-learn { color: var(--butter); }
 
         /* ========================
            FLAGSHIP CARD (Root Word)
@@ -713,6 +727,19 @@
 
         .app-card[data-color="clay"] .btn-flagship:hover {
             box-shadow: 0 10px 30px rgba(224, 128, 89, 0.4);
+        }
+
+        .app-card[data-color="butter"] .flagship-tagline { color: var(--butter); }
+
+        /* Oxblood on butter, the app's own pairing */
+        .app-card[data-color="butter"] .btn-flagship {
+            background: var(--butter);
+            color: #54202e;
+            box-shadow: 0 6px 22px rgba(245, 215, 108, 0.22);
+        }
+
+        .app-card[data-color="butter"] .btn-flagship:hover {
+            box-shadow: 0 10px 30px rgba(245, 215, 108, 0.34);
         }
 
         .app-card.flagship > div > p {
@@ -797,6 +824,10 @@
 
         .app-card[data-color="clay"] .flagship-art .shot {
             box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(224, 128, 89, 0.12);
+        }
+
+        .app-card[data-color="butter"] .flagship-art .shot {
+            box-shadow: 0 28px 64px rgba(0, 0, 0, 0.55), 0 0 46px rgba(245, 215, 108, 0.12);
         }
 
         .flagship-art .plant {
@@ -1239,6 +1270,28 @@
                     </div>
                 </article>
 
+                <!-- Riffology — flagship, in App Store review -->
+                <article class="app-card flagship reveal stagger-4" data-color="butter">
+                    <div>
+                        <span class="app-card-tag">Music &middot; Coming soon to iOS</span>
+                        <div class="flagship-head">
+                            <img src="assets/riffology/icon.png" alt="Riffology app icon — an oxblood R shaped like a guitar pick, on cream">
+                            <div>
+                                <h3>Riffology</h3>
+                                <span class="flagship-tagline">Fresh guitar riffs, and a way to learn them</span>
+                            </div>
+                        </div>
+                        <p>Break out of your guitar rut. Generate a new riff at your level, slow it down, loop the bar that trips you up, and see every note's role on the fretboard. In review with Apple now and landing on the App Store soon.</p>
+                        <div class="flagship-ctas">
+                            <a href="riffology.html" class="btn-flagship">Explore Riffology <span class="arrow">&#8594;</span></a>
+                            <a href="beta.html?app=riffology" class="btn-learn">Be first to try it <span>&#8594;</span></a>
+                        </div>
+                    </div>
+                    <div class="flagship-art" aria-hidden="true">
+                        <img class="shot" src="assets/riffology/01.jpg" alt="" loading="lazy">
+                    </div>
+                </article>
+
                 <!-- Where Is Mama Murphy — flagship (web app) -->
                 <article class="app-card flagship reveal stagger-4" data-color="clay">
                     <div>
@@ -1290,7 +1343,7 @@
                 <h2 class="band-title">Get our apps <span class="gold-text">before anyone else.</span></h2>
                 <p class="band-sub">We're looking for a small group of testers to try early builds on iPhone and iPad. It's free, it takes about five minutes to set up, and you can leave any time.</p>
                 <a class="btn-flagship" href="beta.html">Become a tester <span class="arrow">&#8594;</span></a>
-                <p class="band-note">Root Word, CallSign Check, Racquet Blob and WC INKs.</p>
+                <p class="band-note">Root Word, CallSign Check, Racquet Blob, Riffology and WC INKs.</p>
             </div>
         </section>
 
